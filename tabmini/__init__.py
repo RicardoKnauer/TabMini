@@ -7,9 +7,9 @@ from pandas import DataFrame
 from sklearn.base import BaseEstimator
 from sklearn.model_selection import cross_val_score
 
-from automl import analysis, estimators
-from automl.data import data_handler
-from automl.analysis import meta_feature, auto_ml
+from tabmini import analysis, estimators
+from tabmini.data import data_handler
+from tabmini.analysis import meta_feature, auto_ml
 
 
 def load_dataset(reduced: bool = False) -> dict[str, tuple[DataFrame, DataFrame]]:

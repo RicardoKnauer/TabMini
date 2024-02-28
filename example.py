@@ -6,7 +6,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 
-import automl
+import tabmini
 
 working_directory = Path.cwd() / "workdir"
 
@@ -33,10 +33,10 @@ param_grid = [
 estimator = GridSearchCV(pipe, param_grid=param_grid, cv=3, scoring="neg_log_loss")
 
 # load dataset
-dataset: dict[str, tuple[pd.DataFrame, pd.DataFrame]] = automl.load_dataset(reduced=True)
+dataset: dict[str, tuple[pd.DataFrame, pd.DataFrame]] = tabmini.load_dataset(reduced=True)
 
 # compare with the predefined methods
-results: dict[str, dict[str, tuple[float, float]]] = automl.compare(
+results: dict[str, dict[str, tuple[float, float]]] = tabmini.compare(
     method_name,
     estimator,
     dataset,
@@ -60,7 +60,7 @@ pd.DataFrame(best_params, index=[0]).to_csv(working_directory / filename, index=
 
 # analyze meta features
 loaded_results = pd.read_csv(working_directory / "results.csv")
-meta_features_analysis = automl.get_meta_feature_analysis(
+meta_features_analysis = tabmini.get_meta_feature_analysis(
     dataset,
     loaded_results,
     method_name,

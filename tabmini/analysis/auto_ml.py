@@ -1,7 +1,7 @@
 from sklearn.base import BaseEstimator
 from sklearn.model_selection import cross_val_score, train_test_split
 
-from automl.estimators import get_estimators_with
+from tabmini.estimators import get_estimators_with
 
 
 def get_trained_estimator_and_train_score(estimator: BaseEstimator, X, y) -> tuple[BaseEstimator, float]:

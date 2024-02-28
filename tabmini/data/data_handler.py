@@ -4,7 +4,7 @@ from typing import Tuple
 import pandas as pd
 from pmlb import fetch_data
 
-from automl.data import data_info
+from tabmini.data import data_info
 
 
 def load_dataset(reduced: bool = False) -> dict[str, Tuple[pd.DataFrame, pd.DataFrame]]:
