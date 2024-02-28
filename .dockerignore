@@ -1,0 +1,10 @@
+# Ignore all files
+*
+
+# Except for these ones
+!Dockerfile
+!example.py
+!environment.yml
+!tabmini
+!requirements.txt
+!plotting

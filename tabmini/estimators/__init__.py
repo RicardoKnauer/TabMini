@@ -3,10 +3,10 @@ from typing import FrozenSet
 
 from sklearn.base import BaseEstimator
 
-from automl.estimators.AutoGluon import AutoGluon
-from automl.estimators.AutoPrognosis import AutoPrognosis
-from automl.estimators.HyperFast import HyperFast
-from automl.estimators.TabPFN import TabPFN
+from tabmini.estimators.AutoGluon import AutoGluon
+from tabmini.estimators.AutoPrognosis import AutoPrognosis
+from tabmini.estimators.HyperFast import HyperFast
+from tabmini.estimators.TabPFN import TabPFN
 
 
 def get_available_methods() -> frozenset[str]:
