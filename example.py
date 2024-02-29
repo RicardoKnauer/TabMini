@@ -33,7 +33,7 @@ param_grid = [
 estimator = GridSearchCV(pipe, param_grid=param_grid, cv=3, scoring="neg_log_loss")
 
 # load dataset
-dataset: dict[str, tuple[pd.DataFrame, pd.DataFrame]] = tabmini.load_dummy_dataset()
+dataset: dict[str, tuple[pd.DataFrame, pd.DataFrame]] = tabmini.load_dataset(reduced=True)
 
 # compare with the predefined methods
 train_scores, test_scores = tabmini.compare(
@@ -44,7 +44,7 @@ train_scores, test_scores = tabmini.compare(
     scoring_method="roc_auc",
     cv=3,
     methods={"hyperfast", "tabpfn"},
-    time_limit=10,
+    time_limit=3600,
     device="cpu"
 )
 
