@@ -11,7 +11,7 @@ from tabmini.estimators.TabPFN import TabPFN
 # These are the methods that are not threadsafe. They will be run with n_jobs=1.
 # If your method is not threadsafe, add it to this set.
 _NON_THREADSAFE_METHODS = frozenset({
-    "autogloun",
+    "autogluon",
 })
 
 # This is where the scikit-learn compatible estimators are registered for use as a classifier. Every estimator
@@ -43,7 +43,7 @@ _ESTIMATORS: dict[str, Callable[[Path, int, str, dict], BaseEstimator]] = {
 
 
 def is_threadsafe(method_name: str) -> bool:
-    return method_name not in _NON_THREADSAFE_METHODS
+    return method_name.lower().strip() not in [m.lower().strip() for m in _NON_THREADSAFE_METHODS]
 
 
 def is_sklearn_compatible(estimator: BaseEstimator) -> bool:
