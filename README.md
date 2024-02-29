@@ -9,9 +9,9 @@ against logistic regression.
 
 This project was developed using a devcontainer, which is defined in the `.devcontainer` folder.
 
-For development a `requirements.txt` is included to be installed with pip.
+For development, a `requirements.txt` is included to be installed with pip.
 
-To install the package as a python package, you can use the following command:
+To install the package as a Python package, you can use the following command:
 
 ```bash
 pip install ./tabmini
@@ -19,7 +19,7 @@ pip install ./tabmini
 
 ## Usage - Package
 
-The `TabMini` benchmark suite is designed to be imported into your python project, however, it can also be used as a
+The `TabMini` benchmark suite is designed to be imported into your Python project, however, it can also be used as a
 standalone package. The package is designed to be used in the following way:
 
 ```python
@@ -31,7 +31,7 @@ import tabmini
 
 # Load the dataset
 # Tabmini also provides a dummy dataset for testing purposes, you can load it with tabmini.load_dummy_dataset() 
-# If reduced is set to True, the dataset will exclude all the data that has been used to train TabPFN
+# If reduced is set to True, the dataset will exclude all the data that has been used to meta-train TabPFN
 dataset = tabmini.load_dataset(reduced=False)
 
 # Prepare the estimator you want to benchmark against the other estimators
@@ -44,15 +44,15 @@ train_results, test_results = tabmini.compare(
     dataset,
     working_directory=Path.cwd() / "results",
     scoring_method="roc_auc",
-    cv=5,
+    cv=3,
     time_limit=3600,
     device="cpu"
 )
 
-# Generate the meta features analysis
+# Generate the meta-feature analysis
 meta_features = tabmini.get_meta_feature_analysis(dataset, test_results, "MyEstimator", correlation_method="spearman")
 
-# Save our results and meta features analysis to a CSV file
+# Save the results and meta-feature analysis to a CSV file
 test_results.to_csv("results.csv")
 meta_features.to_csv("meta_features.csv")
 ```
@@ -62,8 +62,8 @@ see the function documentation in the `tabmini` module.
 
 ## Usage - Standalone
 
-To run the benchmark suite in a docker container, you can execute the provided `execute_tabmini.sh` script. 
-This script will build the docker container and run the benchmark suite. The results will be saved in the
+To run the benchmark suite in a Docker container, you can execute the provided `execute_tabmini.sh` script. 
+This script will build the container and run the benchmark suite. The results will be saved in the
 `results` folder.
 
 ```bash
@@ -71,20 +71,20 @@ This script will build the docker container and run the benchmark suite. The res
 ```
 
 By default, this will run the `example.py` script (as described in the next section), which demonstrates how to use the `TabMini` benchmark suite.
-You may replace our illustrative implementation of the Linear Regression with your own estimator.
+You may replace our illustrative implementation of logistic regression with your own estimator.
 
 ## Example
 
-For example usage, see `example.py`. This file is supposed to server as an illustrative example of how 
-`TabMINI` may be used. In the script we demonstrate how to:
+For example usage, see `example.py`. This file is supposed to show how 
+`TabMini` may be used. In the script, we demonstrate how to:
 
 - Implement an estimator that is supposed to be compared to the other estimators (AutoGluon, AutoPrognosis, Hyperfast, TabPFN)
 - Load the dataset
 - Perform the comparison
 - Save the results to a CSV file
-- Loads the results from a CSV file
-- Perform a meta features analysis
-- Save the meta features analysis to a CSV file.
+- Load the results from a CSV file
+- Perform a meta-feature analysis
+- Save the meta-feature analysis to a CSV file.
 
 ## License
 
