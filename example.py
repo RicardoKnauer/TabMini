@@ -7,6 +7,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 
 import tabmini
+from tabmini.estimators import AutoGluon, HyperFast
 
 working_directory = Path.cwd() / "workdir"
 
@@ -43,7 +44,7 @@ train_scores, test_scores = tabmini.compare(
     working_directory,
     scoring_method="roc_auc",
     cv=3,
-    methods={"hyperfast", "tabpfn"},
+    #methods={"autogluon"},
     time_limit=3600,
     device="cpu"
 )

@@ -27,6 +27,7 @@ class AutoGluon(BaseEstimator, ClassifierMixin):
             label=self.target_name,
             path=str(path.absolute()),
             verbosity=0,
+            log_to_file=True,
             **kwargs
         )
 
@@ -53,14 +54,17 @@ class AutoGluon(BaseEstimator, ClassifierMixin):
         X, y = check_X_y(X, y, accept_sparse=True)
 
         # For AutoGluon we need data and target to be in the same DataFrame
-        self.feature_names = [f"f{i}" for i in range(X.shape[1])]
-        self.feature_names.insert(0, self.target_name)
+        self.feature_names = [f"{i}" for i in range(X.shape[1])]
+
+        feature_names_train = self.feature_names.copy()
+        feature_names_train.insert(0, self.target_name)
+
         train_data = pd.DataFrame(
             np.hstack((np.array(y)[:, np.newaxis], X)),
-            columns=self.feature_names
+            columns=feature_names_train
         )
 
-        self.predictor.fit(train_data, presets=self.presets, time_limit=self.time_limit)
+        self.predictor = self.predictor.fit(train_data, presets=self.presets, time_limit=self.time_limit)
         self.is_fitted_ = True
 
         return self
@@ -84,10 +88,8 @@ class AutoGluon(BaseEstimator, ClassifierMixin):
         X = check_array(X, accept_sparse=True)
         check_is_fitted(self, 'is_fitted_')
 
-        eval_y = self.predictor.predict_proba(
-            pd.DataFrame(X, columns=self.feature_names[1:]),
-            as_pandas=True
-        )
+        eval_data = pd.DataFrame(X, columns=self.feature_names, dtype=object)
+        eval_y = self.predictor.predict_proba(eval_data, as_pandas=False)
 
         return eval_y
 

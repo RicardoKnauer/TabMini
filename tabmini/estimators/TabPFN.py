@@ -50,7 +50,7 @@ class TabPFN(BaseEstimator, ClassifierMixin):
             Returns self.
         """
         X, y = check_X_y(X, y, accept_sparse=True)
-        self.predictor.fit(X, y)
+        self.predictor = self.predictor.fit(X, y)
         self.is_fitted_ = True
 
         return self
