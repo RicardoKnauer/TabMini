@@ -2,15 +2,15 @@ from pathlib import Path
 from typing import Tuple, Literal
 
 import pandas as pd
-from pandas import DataFrame
 from sklearn.base import BaseEstimator
 
 from tabmini import analysis, estimators
 from tabmini.analysis import meta_feature, scorer
 from tabmini.data import data_handler
+from .types import TabminiDataset
 
 
-def load_dataset(reduced: bool = False) -> dict[str, tuple[DataFrame, DataFrame]]:
+def load_dataset(reduced: bool = False) -> TabminiDataset:
     """
     Load the dataset for AutoML.
 
@@ -24,7 +24,7 @@ def load_dataset(reduced: bool = False) -> dict[str, tuple[DataFrame, DataFrame]
     return data_handler.load_dataset(reduced)
 
 
-def load_dummy_dataset() -> dict[str, tuple[DataFrame, DataFrame]]:
+def load_dummy_dataset() -> TabminiDataset:
     """
     Load the dummy dataset for AutoML.
 
@@ -38,15 +38,15 @@ def load_dummy_dataset() -> dict[str, tuple[DataFrame, DataFrame]]:
 def compare(
         method_name: str,
         estimator: BaseEstimator,
-        dataset: dict[str, tuple[pd.DataFrame, pd.DataFrame]],
+        dataset: TabminiDataset,
         working_directory: Path,
         scoring_method: str = "roc_auc",
         cv: int = 3,
         time_limit: int = 3600,
         methods: set[str] = estimators.get_available_methods(),
         device: str = "cpu",
-        kwargs_per_classifier: dict[str, dict] = {}
-
+        n_jobs: int = -1,
+        kwargs_per_classifier: dict[str, dict] = None
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Compare the performance of the estimator on the given dataset against all predefined estimators.
@@ -65,6 +65,7 @@ def compare(
         time_limit: The time limit for the comparison. Default is 3600.
         methods: The methods to be compared. Default is all available methods.
         device: The device to be used. Default is "cpu".
+        n_jobs: The number of jobs to be used. Default is -1. If -1, all CPUs are used.
         kwargs_per_classifier: The keyword arguments for each classifier.
 
     Returns:
@@ -82,7 +83,8 @@ def compare(
         time_limit=time_limit,
         methods=methods,
         device=device,
-        kwargs_per_classifier=kwargs_per_classifier
+        n_jobs=n_jobs,
+        kwargs_per_classifier=kwargs_per_classifier,
     )
 
     def extract_from(results, index: Literal[0, 1]) -> dict[str, dict[str, float]]:
@@ -100,7 +102,7 @@ def compare(
 
 
 def get_meta_feature_analysis(
-        dataset: dict[str, tuple[pd.DataFrame, pd.DataFrame]],
+        dataset: TabminiDataset,
         results_wide: pd.DataFrame,
         name_of_method_to_compare: str,
         correlation_method: Literal["pearson", "kendall", "spearman"] = "spearman"

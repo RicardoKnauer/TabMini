@@ -1,13 +1,11 @@
-from pathlib import Path
-from typing import Tuple
-
 import pandas as pd
 from pmlb import fetch_data
 
 from tabmini.data import data_info
+from tabmini.types import TabminiDataset
 
 
-def load_dataset(reduced: bool = False) -> dict[str, Tuple[pd.DataFrame, pd.DataFrame]]:
+def load_dataset(reduced: bool = False) -> TabminiDataset:
     """
     Load the dataset for AutoML. The datasets are loaded from the PMLB library.
     :param reduced: Whether to exclude the datasets that have been used to train TabPFN. Default is False.
@@ -34,7 +32,7 @@ def load_dataset(reduced: bool = False) -> dict[str, Tuple[pd.DataFrame, pd.Data
         raise ValueError("No datasets were loaded.")
 
 
-def load_dummy_dataset() -> dict[str, Tuple[pd.DataFrame, pd.DataFrame]]:
+def load_dummy_dataset() -> TabminiDataset:
     """
     Load a smaller subset of the dataset for AutoML. The datasets are loaded from the PMLB library.
     This is for testing purposes only.

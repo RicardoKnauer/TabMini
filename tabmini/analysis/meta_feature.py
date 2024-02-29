@@ -4,9 +4,11 @@ import numpy as np
 import pandas as pd
 from pymfe.mfe import MFE
 
+from tabmini.types import TabminiDataset
+
 
 def get_meta_feature_analysis(
-        dataset: dict[str, tuple[pd.DataFrame, pd.DataFrame]],
+        dataset: TabminiDataset,
         results_wide: pd.DataFrame,
         method_to_compare: str,
         correlation_method: Literal["pearson", "kendall", "spearman"] = "spearman"
@@ -35,7 +37,7 @@ def get_meta_feature_analysis(
     return correlations
 
 
-def _get_meta_features_of(dataset: dict[str, tuple[pd.DataFrame, pd.DataFrame]]) -> pd.DataFrame:
+def _get_meta_features_of(dataset: TabminiDataset) -> pd.DataFrame:
     meta_features = []
     column_names = None
 
@@ -72,14 +74,17 @@ def _calculate_correlation_of_features(
             dataset[method]
         except KeyError:
             continue
+
         results_meta_features_new[f"diff_{method}"] = dataset[method] - dataset[method_to_compare]
         coeffs = results_meta_features_new.corr(correlation_method)[f"diff_{method}"]
+
         results[method] = {
             'method': method,
             'nr_inst': coeffs['nr_inst'],
             'inst_to_attr': coeffs['inst_to_attr'],
             'EPV': coeffs['EPV']
         }
+
         # largest correlation methods
         largest = round(coeffs.abs().nlargest(11), 2)
         # add the largest correlation methods to the results
@@ -87,8 +92,6 @@ def _calculate_correlation_of_features(
             results[method][m] = value
 
     df = pd.DataFrame(results).T
-
-    # replace empty values with NaN
     df = df.replace("", "NaN")
 
     return df

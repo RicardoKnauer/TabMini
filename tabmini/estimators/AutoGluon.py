@@ -89,9 +89,8 @@ class AutoGluon(BaseEstimator, ClassifierMixin):
         check_is_fitted(self, 'is_fitted_')
 
         eval_data = pd.DataFrame(X, columns=self.feature_names, dtype=object)
-        eval_y = self.predictor.predict_proba(eval_data, as_pandas=False)
 
-        return eval_y
+        return self.predictor.predict_proba(eval_data, as_pandas=False)
 
     def decision_function(self, X):
         # Get the probabilities from predict_proba

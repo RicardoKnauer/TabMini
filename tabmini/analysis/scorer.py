@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.base import BaseEstimator
 from sklearn.model_selection import cross_val_score, cross_validate
 
-from tabmini.estimators import get_estimators_with
+from tabmini.estimators import get_estimators_with, is_threadsafe, is_sklearn_compatible
 
 
 def get_test_score(estimator: BaseEstimator, X, y, cv=3, scoring="roc_auc") -> float:
@@ -10,21 +10,30 @@ def get_test_score(estimator: BaseEstimator, X, y, cv=3, scoring="roc_auc") -> f
 
 
 def _get_train_and_test_score_per_estimators_on(
-        X, y, working_dir, cv, scoring, time_limit, methods, device, kwargs_per_classifier
+        X, y, working_dir, cv, scoring, time_limit, methods, device, n_jobs, kwargs_per_classifier
 ) -> dict[str, tuple[float, float]]:
-    estimators = get_estimators_with(working_dir, time_limit, device, kwargs_per_classifier)
-    results = {}
-
     # lower and strip the method names
     methods = {method.lower().strip() for method in methods}
 
-    for method_name, estimator in estimators.items():
-        if method_name.lower().strip() not in methods:
-            print(f"Skipping {method_name}, not in list of methods to be tested ({methods})")
+    results = {}
+    for method, estimator in get_estimators_with(working_dir, time_limit, device, kwargs_per_classifier).items():
+        if method not in methods:
             continue
-        print(f"Testing {method_name}")
-        scores = cross_validate(estimator, X, y, cv=cv, scoring=scoring, n_jobs=-1, return_train_score=True)
-        results[method_name] = (scores["test_score"].mean(), scores["train_score"].mean())
+
+        n_jobs_for_method = 1 if is_threadsafe(method) else n_jobs
+        print(f"Testing {method} with {n_jobs_for_method} job(s)")
+
+        scores = cross_validate(
+            estimator,
+            X,
+            y,
+            cv=cv,
+            scoring=scoring,
+            n_jobs=n_jobs_for_method,
+            return_train_score=True
+        )
+
+        results[method] = (scores["test_score"].mean(), scores["train_score"].mean())
 
     return results
 
@@ -39,9 +48,10 @@ def compare(
         time_limit,
         methods,
         device,
-        kwargs_per_classifier
+        kwargs_per_classifier,
+        n_jobs=-1
 ):
-    if not (hasattr(estimator, "fit") and hasattr(estimator, "predict_proba") and hasattr(estimator, "decision_function")):
+    if not (is_sklearn_compatible(estimator)):
         raise ValueError("Estimator needs to implement a fit and predict functions.")
 
     results = {}
@@ -58,6 +68,7 @@ def compare(
             time_limit=time_limit,
             methods=methods,
             device=device,
+            n_jobs=n_jobs,
             kwargs_per_classifier=kwargs_per_classifier
         )
 
@@ -69,7 +80,7 @@ def compare(
             y,
             cv=cv,
             scoring=scoring_method,
-            n_jobs=-1,
+            n_jobs=n_jobs,
             return_train_score=True,
             return_estimator=True
         )

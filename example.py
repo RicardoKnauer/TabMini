@@ -1,13 +1,12 @@
 from pathlib import Path
 
-import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 
 import tabmini
-from tabmini.estimators import AutoGluon, HyperFast
+from tabmini.types import TabminiDataset
 
 working_directory = Path.cwd() / "workdir"
 
@@ -31,10 +30,10 @@ param_grid = [
 ]
 
 # inner cross-validation for logistic regression
-estimator = GridSearchCV(pipe, param_grid=param_grid, cv=3, scoring="neg_log_loss")
+estimator = GridSearchCV(pipe, param_grid=param_grid, cv=3, scoring="neg_log_loss", n_jobs=1)
 
 # load dataset
-dataset: dict[str, tuple[pd.DataFrame, pd.DataFrame]] = tabmini.load_dataset(reduced=True)
+dataset: TabminiDataset = tabmini.load_dataset(reduced=True)
 
 # compare with the predefined methods
 train_scores, test_scores = tabmini.compare(
@@ -44,9 +43,10 @@ train_scores, test_scores = tabmini.compare(
     working_directory,
     scoring_method="roc_auc",
     cv=3,
-    #methods={"autogluon"},
+    # methods={"autogluon", "hyperfast"},
     time_limit=3600,
-    device="cpu"
+    device="cpu",
+    n_jobs=-1,
 )
 
 test_scores.to_csv(working_directory / "results.csv", index_label="PMLB dataset")

@@ -17,6 +17,13 @@ To install the package as a Python package, you can use the following command:
 pip install ./tabmini
 ```
 
+#### Contributing
+
+If you want to extend the baseline of the benchmark suite, see `/tabmini/estimators/__init__.py`.
+All estimators present in the `_ESTIMATORS` dictionary will be included in the benchmark suite.
+You only need to implement `BaseEstimator`, `ClassifierMixin`, and add it to the dictionary.
+(Or, adhering to the [scikit-learn API](https://scikit-learn.org/stable/developers/develop.html#rolling-your-own-estimator), you can ducktype as a classifier).
+
 ## Usage - Package
 
 The `TabMini` benchmark suite is designed to be imported into your Python project, however, it can also be used as a
