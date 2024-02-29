@@ -72,7 +72,7 @@ def compare(
             - A DataFrame containing the training scores.
             - A DataFrame containing the test scores.
     """
-    compare_results = scorer.compare(
+    compare_results: dict[str, dict[str, tuple[float, float]]] = scorer.compare(
         method_name,
         estimator,
         dataset,
