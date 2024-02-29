@@ -24,9 +24,6 @@ def get_meta_feature_analysis(
 
     meta_features_of_dataset = _get_meta_features_of(dataset)
 
-    # We need to drop the first column of the results_wide DataFrame, which contains the dataset names
-    results_wide = results_wide.drop(columns=results_wide.columns[0])
-
     correlations = _calculate_correlation_of_features(
         meta_features_of_dataset,
         results_wide,
@@ -41,7 +38,7 @@ def _get_meta_features_of(dataset: TabminiDataset) -> pd.DataFrame:
     meta_features = []
     column_names = None
 
-    for _, (X, y) in dataset:
+    for _, (X, y) in dataset.items():
         mfe = MFE(groups="all", summary="all", num_cv_folds=3, random_state=42)
         X = np.array(X)
         y = np.array(y)
@@ -54,7 +51,7 @@ def _get_meta_features_of(dataset: TabminiDataset) -> pd.DataFrame:
         meta_features.append(row)
 
     # Create a DataFrame with the meta-features
-    results_meta_features = pd.DataFrame(meta_features, columns=column_names)
+    results_meta_features = pd.DataFrame(meta_features, columns=column_names, index=list(dataset.keys()))
     results_meta_features["EPV"] = results_meta_features["EPV"] / results_meta_features["nr_attr"]
 
     return results_meta_features
@@ -62,20 +59,23 @@ def _get_meta_features_of(dataset: TabminiDataset) -> pd.DataFrame:
 
 def _calculate_correlation_of_features(
         meta_features: pd.DataFrame,
-        dataset: pd.DataFrame,
+        comparison_results: pd.DataFrame,
         correlation_method: Literal["pearson", "kendall", "spearman"],
         method_to_compare: str
 ) -> pd.DataFrame:
     results = {}
 
-    for method in dataset.columns:
+    for method in comparison_results.columns:
+
         results_meta_features_new = meta_features.copy()
+
         try:
-            dataset[method]
+            comparison_results[method]
         except KeyError:
             continue
 
-        results_meta_features_new[f"diff_{method}"] = dataset[method] - dataset[method_to_compare]
+        diff = comparison_results[method] - comparison_results[method_to_compare]
+        results_meta_features_new[f"diff_{method}"] = diff
         coeffs = results_meta_features_new.corr(correlation_method)[f"diff_{method}"]
 
         results[method] = {

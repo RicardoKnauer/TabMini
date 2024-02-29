@@ -12,8 +12,9 @@ def load_dataset(reduced: bool = False) -> TabminiDataset:
     :return: A dictionary containing the loaded dataset. The key is the dataset name and the value is a tuple containing
     the input features and the target variable.
     """
-    yielded = False
-    # Load the dataset
+    dataset = {}
+
+    print("Loading dataset...")
     for idx, _datasets in enumerate(data_info.files):
         datasets = _datasets if not reduced else [file for file in _datasets if data_info.is_not_excluded(file)]
 
@@ -25,11 +26,12 @@ def load_dataset(reduced: bool = False) -> TabminiDataset:
 
             data = fetched_data.sample(frac=1, random_state=42).reset_index(drop=True)
 
-            yielded = True  # At least one dataset was loaded
-            yield dataset_name, (data.drop(columns=["target"]), data["target"])
+            dataset[dataset_name] = (data.drop(columns=["target"]), data["target"])
 
-    if not yielded:
-        raise ValueError("No datasets were loaded.")
+    # Print on the same line
+    print("Dataset loaded.")
+
+    return dataset
 
 
 def load_dummy_dataset() -> TabminiDataset:
@@ -40,6 +42,9 @@ def load_dummy_dataset() -> TabminiDataset:
     the input features and the target variable.
     """
     print("YOU ARE USING THE DUMMY DATASET LOADER. THIS IS FOR TESTING PURPOSES ONLY.")
+
+    dataset = {}
+
     # We want to load the first ten rows of every dataset
     for idx, _datasets in enumerate(data_info.files[0:2]):
         for dataset_name in _datasets[0:2]:
@@ -50,4 +55,6 @@ def load_dummy_dataset() -> TabminiDataset:
 
             data = fetched_data.sample(frac=1, random_state=42).reset_index(drop=True)
 
-            yield dataset_name, (data.drop(columns=["target"]).head(20), data["target"].head(20))
+            dataset[dataset_name] = (data.drop(columns=["target"]).head(20), data["target"].head(20))
+
+    return dataset

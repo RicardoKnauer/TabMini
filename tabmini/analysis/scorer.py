@@ -20,7 +20,8 @@ def _get_train_and_test_score_per_estimators_on(
         if method not in methods:
             continue
 
-        n_jobs_for_method = 1 if is_threadsafe(method) else n_jobs
+        n_jobs_for_method = n_jobs if is_threadsafe(method) else 1
+
         print(f"Testing {method} with {n_jobs_for_method} job(s)")
 
         scores = cross_validate(
@@ -55,7 +56,7 @@ def compare(
         raise ValueError("Estimator needs to implement a fit and predict functions.")
 
     results = {}
-    for dataset_name, (X, y) in dataset:
+    for dataset_name, (X, y) in dataset.items():
         print(f"Comparing {method_name} on {dataset_name}")
 
         # Check how our estimators perform on the dataset
