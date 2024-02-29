@@ -1,19 +1,11 @@
+import pandas as pd
 from sklearn.base import BaseEstimator
-from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.model_selection import cross_val_score, cross_validate
 
 from tabmini.estimators import get_estimators_with
 
 
-def get_trained_estimator_and_train_score(estimator: BaseEstimator, X, y) -> tuple[BaseEstimator, float]:
-    if not (hasattr(estimator, "fit") and hasattr(estimator, "predict_proba") and hasattr(estimator, "decision_function")):
-        raise ValueError("Estimator needs to implement a fit and predict functions.")
-
-    X_train, _, y_train, _ = train_test_split(X, y, test_size=0.2, random_state=42)
-    trained = estimator.fit(X_train, y_train)
-    return trained, _get_test_score(trained, X_train, y_train, cv=2)
-
-
-def _get_test_score(estimator: BaseEstimator, X, y, cv=3, scoring="roc_auc") -> float:
+def get_test_score(estimator: BaseEstimator, X, y, cv=3, scoring="roc_auc") -> float:
     return cross_val_score(estimator, X, y, cv=cv, scoring=scoring, n_jobs=-1).mean()
 
 
@@ -30,10 +22,9 @@ def _get_train_and_test_score_per_estimators_on(
         if method_name.lower().strip() not in methods:
             print(f"Skipping {method_name}, not in list of methods to be tested ({methods})")
             continue
-
-        trained_estimator, training_score = get_trained_estimator_and_train_score(estimator, X, y)
-        test_score = _get_test_score(trained_estimator, X, y, cv=cv, scoring=scoring)
-        results[method_name] = (test_score, training_score)
+        print(f"Testing {method_name}")
+        scores = cross_validate(estimator, X, y, cv=cv, scoring=scoring, n_jobs=-1, return_train_score=True)
+        results[method_name] = (scores["test_score"].mean(), scores["train_score"].mean())
 
     return results
 
@@ -50,9 +41,12 @@ def compare(
         device,
         kwargs_per_classifier
 ):
+    if not (hasattr(estimator, "fit") and hasattr(estimator, "predict_proba") and hasattr(estimator, "decision_function")):
+        raise ValueError("Estimator needs to implement a fit and predict functions.")
+
     results = {}
     for dataset_name, (X, y) in dataset:
-        print(f"Comparing {estimator} on {dataset_name}")
+        print(f"Comparing {method_name} on {dataset_name}")
 
         # Check how our estimators perform on the dataset
         results_for_dataset: dict[str, tuple[float, float]] = _get_train_and_test_score_per_estimators_on(
@@ -68,13 +62,33 @@ def compare(
         )
 
         # Compare the given estimator with the predefined ones
-        trained_estimator, training_score = get_trained_estimator_and_train_score(estimator, X, y)
-        test_score = _get_test_score(trained_estimator, X, y, cv, scoring_method)
+        print(f"Testing {method_name}")
+        scores = cross_validate(
+            estimator,
+            X,
+            y,
+            cv=cv,
+            scoring=scoring_method,
+            n_jobs=-1,
+            return_train_score=True,
+            return_estimator=True
+        )
 
         # Add our subjects score to the results
-        results_for_dataset[method_name] = (test_score, training_score)
+        results_for_dataset[method_name] = (scores["test_score"].mean(), scores["train_score"].mean())
 
         # And get ready to return
         results[dataset_name] = results_for_dataset
+
+        # Addendum: Save the best hyperparameters if available
+        i_best_estimator = max(enumerate(scores["test_score"]), key=lambda x: x[1])[0]
+        best_estimator = scores["estimator"][i_best_estimator]
+
+        if not hasattr(best_estimator, "best_params_"):
+            continue
+
+        best_params = best_estimator.best_params_
+        filename = "best_params_" + method_name.replace(" ", "").strip() + ".csv"
+        pd.DataFrame(best_params, index=[0]).to_csv(working_directory / filename, index=False)
 
     return results

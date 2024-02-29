@@ -9,7 +9,7 @@ against logistic regression.
 
 This project was developed using a devcontainer, which is defined in the `.devcontainer` folder.
 
-Further, `requirements.txt` file is also provided for those who prefer to use pip.
+For development a `requirements.txt` is included to be installed with pip.
 
 To install the package as a python package, you can use the following command:
 

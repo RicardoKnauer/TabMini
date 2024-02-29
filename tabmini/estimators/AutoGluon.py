@@ -23,7 +23,12 @@ class AutoGluon(BaseEstimator, ClassifierMixin):
         self.time_limit = time_limit
         self.presets = presets
         self.kwargs = kwargs
-        self.predictor = TabularPredictor(label=self.target_name, path=str(path.absolute()), **kwargs)
+        self.predictor = TabularPredictor(
+            label=self.target_name,
+            path=str(path.absolute()),
+            verbosity=0,
+            **kwargs
+        )
 
         # specify that this is a binary classifier
         self.n_classes_ = 2

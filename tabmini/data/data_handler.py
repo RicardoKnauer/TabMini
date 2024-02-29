@@ -53,20 +53,3 @@ def load_dummy_dataset() -> dict[str, Tuple[pd.DataFrame, pd.DataFrame]]:
             data = fetched_data.sample(frac=1, random_state=42).reset_index(drop=True)
 
             yield dataset_name, (data.drop(columns=["target"]).head(20), data["target"].head(20))
-
-
-def save_dataset(dataset: dict[str, Tuple[pd.DataFrame, pd.DataFrame]], path: Path = Path("datasets")) -> None:
-    """
-    Save the dataset for AutoML. The datasets are loaded from the PMLB library.
-    :param dataset: A dictionary containing the loaded dataset. The key is the dataset name and the value is a tuple
-    containing the input features and the target variable.
-    :param path: The path to save the datasets.
-    """
-    for idx, (dataset_name, (X, y)) in enumerate(dataset.items()):
-        output_dir = path / f"{idx + 1}" / dataset_name
-        output_dir.mkdir(parents=True, exist_ok=True)
-
-        X.to_csv(output_dir, "X.csv", index=False)
-        y.to_csv(output_dir, "y.csv", index=False)
-
-        print(f"Saved {dataset_name} to {output_dir}")

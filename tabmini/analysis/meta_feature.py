@@ -64,7 +64,7 @@ def _calculate_correlation_of_features(
         correlation_method: Literal["pearson", "kendall", "spearman"],
         method_to_compare: str
 ) -> pd.DataFrame:
-    results = []
+    results = {}
 
     for method in dataset.columns:
         results_meta_features_new = meta_features.copy()
@@ -74,12 +74,21 @@ def _calculate_correlation_of_features(
             continue
         results_meta_features_new[f"diff_{method}"] = dataset[method] - dataset[method_to_compare]
         coeffs = results_meta_features_new.corr(correlation_method)[f"diff_{method}"]
-        results.append({
+        results[method] = {
             'method': method,
-            'coeffs': coeffs.abs().nlargest(11),
             'nr_inst': coeffs['nr_inst'],
             'inst_to_attr': coeffs['inst_to_attr'],
             'EPV': coeffs['EPV']
-        })
+        }
+        # largest correlation methods
+        largest = round(coeffs.abs().nlargest(11), 2)
+        # add the largest correlation methods to the results
+        for m, value in largest.items():
+            results[method][m] = value
 
-    return pd.DataFrame(results)
+    df = pd.DataFrame(results).T
+
+    # replace empty values with NaN
+    df = df.replace("", "NaN")
+
+    return df
