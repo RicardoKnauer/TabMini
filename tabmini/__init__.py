@@ -1,15 +1,13 @@
 from pathlib import Path
 from typing import Tuple, Literal
 
-import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from sklearn.base import BaseEstimator
-from sklearn.model_selection import cross_val_score
 
 from tabmini import analysis, estimators
+from tabmini.analysis import meta_feature, scorer
 from tabmini.data import data_handler
-from tabmini.analysis import meta_feature, auto_ml
 
 
 def load_dataset(reduced: bool = False) -> dict[str, tuple[DataFrame, DataFrame]]:
@@ -28,68 +26,13 @@ def load_dataset(reduced: bool = False) -> dict[str, tuple[DataFrame, DataFrame]
 
 def load_dummy_dataset() -> dict[str, tuple[DataFrame, DataFrame]]:
     """
-    Load the dataset for AutoML.
+    Load the dummy dataset for AutoML.
 
     Returns:
         dict[str, Tuple[pd.DataFrame, pd.DataFrame]]: A dictionary containing the loaded dataset.
 
     """
     return data_handler.load_dummy_dataset()
-
-
-def save_dataset(dataset: dict[str, Tuple[pd.DataFrame, pd.DataFrame]], path: Path = Path("datasets")) -> None:
-    """
-    Save the dataset for AutoML.
-
-    Args:
-        dataset (dict[str, pd.DataFrame]): A dictionary containing the loaded dataset.
-        path (Path): The path to save the datasets.
-
-    """
-    data_handler.save_dataset(dataset, path)
-
-
-def get_trained_estimator_and_score(
-        estimator: BaseEstimator,
-        X: np.ndarray,
-        y: np.ndarray
-) -> tuple[BaseEstimator, float]:
-    """
-    Train the estimator and return the training score.
-
-    Args:
-        estimator: The estimator to be trained.
-        X: The input features.
-        y: The target variable.
-
-    Returns:
-        tuple[BaseEstimator, float]: A tuple containing:
-            - The trained estimator.
-            - The training score.
-
-    """
-    return auto_ml.get_trained_estimator_and_train_score(estimator, X, y)
-
-
-def get_test_score(
-        estimator: BaseEstimator,
-        X: np.ndarray | pd.DataFrame,
-        y: np.ndarray | pd.DataFrame,
-        cv: int = 3,
-        scoring: str = "roc_auc"
-) -> float:
-    """
-    Score the estimator using cross-validation.
-
-    Args:
-        estimator: The estimator to be scored.
-        X: The input features.
-        y: The target variable.
-        cv: The cross-validation strategy.
-        scoring: The scoring metric.
-
-    """
-    return cross_val_score(estimator, X, y, cv=cv, scoring=scoring).mean()
 
 
 def compare(
@@ -104,9 +47,13 @@ def compare(
         device: str = "cpu",
         kwargs_per_classifier: dict[str, dict] = {}
 
-) -> dict[str, dict[str, tuple[float, float]]]:
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Compare the performance of the estimator on the given dataset against all predefined estimators.
+
+    There are many sideeffects to this function.
+    One of them is that: If the model you are trying to compare does any sort of hyperparameter
+    optimization, the results will be saved in the working directory.
 
     Args:
         method_name: The name of the estimator to be compared.
@@ -121,13 +68,11 @@ def compare(
         kwargs_per_classifier: The keyword arguments for each classifier.
 
     Returns:
-        dict[str, dict[str, tuple[float, float]]]: A dictionary containing:
-            - The dataset name as the key.
-            - A dictionary containing the estimator name as the key and a tuple containing the training and test scores
-              as the value.
-
+        tuple[pd.DataFrame, pd.DataFrame]: A tuple containing:
+            - A DataFrame containing the training scores.
+            - A DataFrame containing the test scores.
     """
-    return auto_ml.compare(
+    compare_results = scorer.compare(
         method_name,
         estimator,
         dataset,
@@ -139,6 +84,19 @@ def compare(
         device=device,
         kwargs_per_classifier=kwargs_per_classifier
     )
+
+    def extract_from(results, index: Literal[0, 1]) -> dict[str, dict[str, float]]:
+        return {
+            dataset_name: {
+                method: scores[index] for method, scores in method_results.items()
+            } for dataset_name, method_results in results.items()
+        }
+
+    train_scores = extract_from(compare_results, 0)
+    test_scores = extract_from(compare_results, 1)
+
+    # save results
+    return pd.DataFrame(train_scores).T, pd.DataFrame(test_scores).T
 
 
 def get_meta_feature_analysis(

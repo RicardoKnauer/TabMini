@@ -21,7 +21,7 @@ pipe = Pipeline(
 
 # define hyperparameters
 REGULARIZATION_OPTIONS = ["l2"]
-LAMBDA_OPTIONS = [0.5, 0.01]  #[0.5, 0.01, 0.002, 0.0004]
+LAMBDA_OPTIONS = [0.5, 0.01, 0.002, 0.0004]
 param_grid = [
     {
         "classify__penalty": REGULARIZATION_OPTIONS,
@@ -33,40 +33,29 @@ param_grid = [
 estimator = GridSearchCV(pipe, param_grid=param_grid, cv=3, scoring="neg_log_loss")
 
 # load dataset
-dataset: dict[str, tuple[pd.DataFrame, pd.DataFrame]] = tabmini.load_dataset(reduced=True)
+dataset: dict[str, tuple[pd.DataFrame, pd.DataFrame]] = tabmini.load_dummy_dataset()
 
 # compare with the predefined methods
-results: dict[str, dict[str, tuple[float, float]]] = tabmini.compare(
+train_scores, test_scores = tabmini.compare(
     method_name,
     estimator,
     dataset,
     working_directory,
     scoring_method="roc_auc",
     cv=3,
-    time_limit=60,
+    methods={"hyperfast", "tabpfn"},
+    time_limit=10,
     device="cpu"
 )
 
-print(results)
-
-# save results
-results_df = pd.DataFrame(results).T
-results_df.to_csv(working_directory / "results.csv", index=False)
-
-# save the best hyperparameters to a csv file
-best_params = estimator.best_params_
-filename = "best_params_" + method_name.replace(" ", "").strip() + ".csv"
-pd.DataFrame(best_params, index=[0]).to_csv(working_directory / filename, index=False)
+test_scores.to_csv(working_directory / "results.csv", index_label="PMLB dataset")
 
 # analyze meta features
-loaded_results = pd.read_csv(working_directory / "results.csv")
 meta_features_analysis = tabmini.get_meta_feature_analysis(
     dataset,
-    loaded_results,
+    test_scores,
     method_name,
     correlation_method="spearman"
 )
 
 meta_features_analysis.to_csv(working_directory / "meta_features_analysis.csv", index=False)
-
-
