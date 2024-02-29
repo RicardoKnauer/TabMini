@@ -23,10 +23,11 @@ The `TabMini` benchmark suite is designed to be imported into your python projec
 standalone package. The package is designed to be used in the following way:
 
 ```python
-import tabmini
-import pandas as pd
 from pathlib import Path
+
 from yourpackage import YourEstimator
+
+import tabmini
 
 # Load the dataset
 # Tabmini also provides a dummy dataset for testing purposes, you can load it with tabmini.load_dummy_dataset() 
@@ -37,25 +38,22 @@ dataset = tabmini.load_dataset(reduced=False)
 estimator = YourEstimator()
 
 # Perform the comparison
-results = tabmini.compare(
-    "MyEstimator", 
-    estimator, 
-    dataset, 
+train_results, test_results = tabmini.compare(
+    "MyEstimator",
+    estimator,
+    dataset,
     working_directory=Path.cwd() / "results",
     scoring_method="roc_auc",
     cv=5,
     time_limit=3600,
     device="cpu"
 )
-results = pd.DataFrame(results)
-
-# Save the results to a CSV file
-results.to_csv("results.csv")
 
 # Generate the meta features analysis
-meta_features = tabmini.get_meta_feature_analysis(dataset, results, "MyEstimator", correlation_method="spearman")
+meta_features = tabmini.get_meta_feature_analysis(dataset, test_results, "MyEstimator", correlation_method="spearman")
 
-# Save the meta features analysis to a CSV file
+# Save our results and meta features analysis to a CSV file
+test_results.to_csv("results.csv")
 meta_features.to_csv("meta_features.csv")
 ```
 
