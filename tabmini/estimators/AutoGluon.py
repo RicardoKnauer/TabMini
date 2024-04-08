@@ -28,6 +28,7 @@ class AutoGluon(BaseEstimator, ClassifierMixin):
             path=str(path.absolute()),
             verbosity=0,
             log_to_file=True,
+            eval_metric="roc_auc",
             **kwargs
         )
 
@@ -98,6 +99,6 @@ class AutoGluon(BaseEstimator, ClassifierMixin):
 
         # Calculate the log of ratios for binary classification
         # Add a small constant to both the numerator and the denominator
-        decision = np.log((proba[:, 1] + 1e-10) / (proba[:, 0] + 1e-10 + 1e-10))
+        decision = np.log((proba[:, 1] + 1e-10) / (proba[:, 0] + 1e-10))
 
         return decision

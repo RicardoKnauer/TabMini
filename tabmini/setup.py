@@ -18,5 +18,8 @@ setup(
         "autogluon==1.0.0",
         "hyperfast==1.0.2",
         "pymfe==0.4.3",
+        "lightgbm==3.3.1",
+        "xgboost==2.0.3",
+        "catboost==1.2.3",
     ],
 )

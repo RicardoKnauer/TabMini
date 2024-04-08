@@ -62,7 +62,7 @@ def compare(
         working_directory: The working directory to save the results.
         scoring_method: The scoring method to be used. Default is "roc_auc".
         cv: The cross-validation strategy to be used. Default is 3.
-        time_limit: The time limit for the comparison. Default is 3600.
+        time_limit: The time limit for the comparison in seconds. Default is 3600.
         methods: The methods to be compared. Default is all available methods.
         device: The device to be used. Default is "cpu".
         n_jobs: The number of jobs to be used. Default is -1. If -1, all CPUs are used.

@@ -59,6 +59,9 @@ def compare(
     for dataset_name, (X, y) in dataset.items():
         print(f"Comparing {method_name} on {dataset_name}")
 
+        # We need to make sure our target is in the right format, that means [0, 1].
+        y = (y == y.max()).astype(int)
+
         # Check how our estimators perform on the dataset
         results_for_dataset: dict[str, tuple[float, float]] = _get_train_and_test_score_per_estimators_on(
             X,

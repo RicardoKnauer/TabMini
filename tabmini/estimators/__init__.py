@@ -1,12 +1,15 @@
 from pathlib import Path
-from typing import FrozenSet, Callable
+from typing import Callable
 
 from sklearn.base import BaseEstimator
 
 from tabmini.estimators.AutoGluon import AutoGluon
 from tabmini.estimators.AutoPrognosis import AutoPrognosis
 from tabmini.estimators.HyperFast import HyperFast
+from tabmini.estimators.LightGBM import LightGBM
 from tabmini.estimators.TabPFN import TabPFN
+from tabmini.estimators.XGBoost import XGBoost
+from tabmini.estimators.CatBoost import CatBoost
 
 # These are the methods that are not threadsafe. They will be run with n_jobs=1.
 # If your method is not threadsafe, add it to this set.
@@ -39,6 +42,23 @@ _ESTIMATORS: dict[str, Callable[[Path, int, str, dict], BaseEstimator]] = {
         device=device,
         kwargs=kwargs
     ),
+    "LightGBM": lambda base_path, time_limit, _, kwargs: LightGBM(
+        path=base_path / "lightgbm",
+        time_limit=time_limit,
+        kwargs=kwargs
+    ),
+    "XGBoost": lambda base_path, time_limit, _, kwargs: XGBoost(
+        path=base_path / "xgboost",
+        time_limit=time_limit,
+        kwargs=kwargs
+    ),
+    "CatBoost": lambda base_path, time_limit, device, kwargs: CatBoost(
+        path=base_path / "catboost",
+        time_limit=time_limit,
+        device=device,
+        kwargs=kwargs
+    ),
+
 }
 
 
