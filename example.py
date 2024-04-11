@@ -6,6 +6,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 
 import tabmini
+from tabmini.estimators import get_available_methods
 from tabmini.types import TabminiDataset
 
 working_directory = Path.cwd() / "workdir"
@@ -30,33 +31,37 @@ param_grid = [
 ]
 
 # inner cross-validation for logistic regression
-estimator = GridSearchCV(pipe, param_grid=param_grid, cv=3, scoring="neg_log_loss", n_jobs=1)
+estimator = GridSearchCV(pipe, param_grid=param_grid, cv=3, scoring="neg_log_loss", n_jobs=-1)
 
 # load dataset
-dataset: TabminiDataset = tabmini.load_dataset(reduced=True)
+dataset: TabminiDataset = tabmini.load_dataset()
 
-# compare with the predefined methods
-train_scores, test_scores = tabmini.compare(
-    method_name,
-    estimator,
-    dataset,
-    working_directory,
-    scoring_method="roc_auc",
-    cv=3,
-    # methods={"autogluon", "hyperfast"},
-    time_limit=3600,
-    device="cpu",
-    n_jobs=-1,
-)
+# define a set of time-limits
+time_limits = [1, 3, 10, 30, 60]
 
-test_scores.to_csv(working_directory / "results.csv", index_label="PMLB dataset")
 
-# analyze meta features
-meta_features_analysis = tabmini.get_meta_feature_analysis(
-    dataset,
-    test_scores,
-    method_name,
-    correlation_method="spearman"
-)
+for time_limit in time_limits:
+    # compare with the predefined methods
+    test_scores, train_scores = tabmini.compare(
+        method_name,
+        estimator,
+        dataset,
+        working_directory,
+        scoring_method="roc_auc",
+        cv=3,
+        time_limit=time_limit,
+        device="cpu",
+        n_jobs=-1,  # Time Limit does not play nice with threads
+    )
 
-meta_features_analysis.to_csv(working_directory / "meta_features_analysis.csv", index=False)
+    test_scores.to_csv(working_directory / f"results_{time_limit}.csv", index_label="PMLB dataset")
+
+    # analyze meta features
+    meta_features_analysis = tabmini.get_meta_feature_analysis(
+        dataset,
+        test_scores,
+        method_name,
+        correlation_method="spearman"
+    )
+
+    meta_features_analysis.to_csv(working_directory / f"meta_features_analysis_{time_limit}.csv", index=False)

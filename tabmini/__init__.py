@@ -1,4 +1,5 @@
 from pathlib import Path
+from pydoc import doc
 from typing import Tuple, Literal
 
 import pandas as pd
@@ -35,6 +36,7 @@ def load_dummy_dataset() -> TabminiDataset:
     return data_handler.load_dummy_dataset()
 
 
+
 def compare(
         method_name: str,
         estimator: BaseEstimator,
@@ -51,7 +53,7 @@ def compare(
     """
     Compare the performance of the estimator on the given dataset against all predefined estimators.
 
-    There are many sideeffects to this function.
+    There are many side effects to this function.
     One of them is that: If the model you are trying to compare does any sort of hyperparameter
     optimization, the results will be saved in the working directory.
 
@@ -62,7 +64,7 @@ def compare(
         working_directory: The working directory to save the results.
         scoring_method: The scoring method to be used. Default is "roc_auc".
         cv: The cross-validation strategy to be used. Default is 3.
-        time_limit: The time limit for the comparison. Default is 3600.
+        time_limit: The time limit for the comparison in seconds. Default is 3600.
         methods: The methods to be compared. Default is all available methods.
         device: The device to be used. Default is "cpu".
         n_jobs: The number of jobs to be used. Default is -1. If -1, all CPUs are used.
@@ -70,9 +72,12 @@ def compare(
 
     Returns:
         tuple[pd.DataFrame, pd.DataFrame]: A tuple containing:
-            - A DataFrame containing the training scores.
             - A DataFrame containing the test scores.
+            - A DataFrame containing the train scores.
     """
+    print(f"Evaluating {method_name} against {methods}...")
+    # The result of scorer.compare is a dictionary shaped like
+    # dataset_name: {method_name: (test_score, train_score)}
     compare_results: dict[str, dict[str, tuple[float, float]]] = scorer.compare(
         method_name,
         estimator,
@@ -94,11 +99,11 @@ def compare(
             } for dataset_name, method_results in results.items()
         }
 
-    train_scores = extract_from(compare_results, 0)
-    test_scores = extract_from(compare_results, 1)
+    test_scores = extract_from(compare_results, 0)
+    train_scores = extract_from(compare_results, 1)
 
     # save results
-    return pd.DataFrame(train_scores).T, pd.DataFrame(test_scores).T
+    return pd.DataFrame(test_scores).T, pd.DataFrame(train_scores).T
 
 
 def get_meta_feature_analysis(

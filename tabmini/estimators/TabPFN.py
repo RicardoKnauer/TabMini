@@ -14,6 +14,7 @@ class TabPFN(BaseEstimator, ClassifierMixin):
             time_limit: int = 3600,
             n_ensemble_configurations: int = 32,
             device: str = "cpu",
+            seed: int = 0,
             kwargs: dict = {}
     ):
         self.predictor = TabPFNClassifier(
@@ -21,12 +22,14 @@ class TabPFN(BaseEstimator, ClassifierMixin):
             N_ensemble_configurations=n_ensemble_configurations,
             subsample_features=True,
             device=device,
+            seed=seed,
             **kwargs
         )
         self.path = path
         self.time_limit = time_limit
         self.n_ensemble_configurations = n_ensemble_configurations
         self.device = device
+        self.seed = seed
         self.kwargs = kwargs
 
         # specify that this is a binary classifier
@@ -55,16 +58,6 @@ class TabPFN(BaseEstimator, ClassifierMixin):
 
         return self
 
-    def decision_function(self, X):
-        # Get the probabilities from predict_proba
-        proba = self.predict_proba(X)
-
-        # Calculate the log of ratios for binary classification
-        # Add a small constant to both the numerator and the denominator
-        decision = np.log((proba[:, 1] + 1e-10) / (proba[:, 0] + 1e-10 + 1e-10))
-
-        return decision
-
     def predict_proba(self, X) -> np.ndarray:
         """ A reference implementation of a predicting function.
 
@@ -82,12 +75,12 @@ class TabPFN(BaseEstimator, ClassifierMixin):
         check_is_fitted(self, 'is_fitted_')
 
         # Get the probability of the positive class
-        proba_positive_class = self.predictor.predict(X)
+        probability_positive_class = self.predictor.predict(X)
+        probability_positive_class_scaled = (probability_positive_class - probability_positive_class.min()) / (
+                probability_positive_class.max() - probability_positive_class.min())
 
         # Create a 2D array with probabilities of both classes
-        proba = np.vstack([1 - proba_positive_class, proba_positive_class]).T
-
-        return proba
+        return np.vstack([1 - probability_positive_class_scaled, probability_positive_class_scaled]).T
 
     def predict(self, X) -> np.ndarray:
         """ A reference implementation of a predicting function.
@@ -107,3 +100,13 @@ class TabPFN(BaseEstimator, ClassifierMixin):
 
         # (we know this is a numpy array, because of nograd)
         return self.predictor.predict(X)  # type: ignore
+
+    def decision_function(self, X):
+        # Get the probabilities from predict_proba
+        proba = self.predict_proba(X)
+
+        # Calculate the log of ratios for binary classification
+        # Add a small constant to both the numerator and the denominator
+        decision = np.log((proba[:, 1]) / (proba[:, 0] + 1e-10))
+
+        return decision

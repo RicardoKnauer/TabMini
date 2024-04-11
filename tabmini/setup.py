@@ -2,7 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name='tabmini',
-    version='1.0.0',
+    version='1.1.0',
+    python_requires='>3.10',
     url='https://github.com/RicardoKnauer/TabMini',
     author='Ricardo Knauer, Marvin Grimm, Erik Rodner',
     author_email='marvin.grimm@htw-berlin.de',
@@ -18,5 +19,8 @@ setup(
         "autogluon==1.0.0",
         "hyperfast==1.0.2",
         "pymfe==0.4.3",
+        "lightgbm==3.3.1",
+        "xgboost==2.0.3",
+        "catboost==1.2.3",
     ],
 )
