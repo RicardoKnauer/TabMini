@@ -68,7 +68,7 @@ For more information on the available functions, including passing individual ar
 see the function documentation in the `tabmini` module.
 
 If you wish to selectively include or exclude estimators from the benchmark suite, you can do so by passing the
-`estimators` argument to the `compare` function. This argument should be a list of the estimators you wish to include.
+`methods` argument to the `compare` function. This argument should be a list of the estimators you wish to include.
 
 ```python
 from tabmini.estimators import get_available_methods
