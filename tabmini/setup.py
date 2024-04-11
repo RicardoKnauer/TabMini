@@ -2,7 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name='tabmini',
-    version='1.0.0',
+    version='1.1.0',
+    python_requires='>3.10',
     url='https://github.com/RicardoKnauer/TabMini',
     author='Ricardo Knauer, Marvin Grimm, Erik Rodner',
     author_email='marvin.grimm@htw-berlin.de',

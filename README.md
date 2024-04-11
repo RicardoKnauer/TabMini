@@ -20,7 +20,7 @@ pip install ./tabmini
 #### Contributing
 
 If you want to extend the baseline of the benchmark suite, see `/tabmini/estimators/__init__.py`.
-All estimators present in the `_ESTIMATORS` dictionary will be included in the benchmark suite.
+By default, all estimators present in the `_ESTIMATORS` dictionary will be included in the benchmark suite.
 You only need to implement `BaseEstimator`, `ClassifierMixin`, and add it to the dictionary.
 (Or, adhering to the [scikit-learn API](https://scikit-learn.org/stable/developers/develop.html#rolling-your-own-estimator), you can ducktype as a classifier).
 
@@ -67,6 +67,30 @@ meta_features.to_csv("meta_features.csv")
 For more information on the available functions, including passing individual arguments to the estimators, 
 see the function documentation in the `tabmini` module.
 
+If you wish to selectively include or exclude estimators from the benchmark suite, you can do so by passing the
+`estimators` argument to the `compare` function. This argument should be a list of the estimators you wish to include.
+
+```python
+from tabmini.estimators import get_available_methods
+
+# Please note that includes and excludes are case-sensitive
+example_exclude = get_available_methods() - {"XGBoost", "CatBoost", "LightGBM"}
+example_include = {"XGBoost", "CatBoost", "LightGBM"}
+
+test_scores, train_scores = tabmini.compare(
+    method_name,
+    estimator,
+    dataset,
+    working_directory,
+    scoring_method="roc_auc",
+    cv=3,
+    methods=example_exclude,  # type: ignore
+    time_limit=3600,
+    device="cpu",
+    n_jobs=-1,
+)
+```
+
 ## Usage - Standalone
 
 To run the benchmark suite in a Docker container, you can execute the provided `execute_tabmini.sh` script. 
@@ -92,6 +116,8 @@ For example usage, see `example.py`. This file is supposed to show how
 - Load the results from a CSV file
 - Perform a meta-feature analysis
 - Save the meta-feature analysis to a CSV file.
+
+`example.py` also contains the script that was used to generate the results in the paper.
 
 ## License
 

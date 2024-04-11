@@ -14,6 +14,7 @@ class HyperFast(BaseEstimator, ClassifierMixin):
             time_limit: int = 3600,
             n_ensemble_configurations: int = 32,
             device: str = "cpu",
+            seed: int = 0,
             kwargs: dict = {}
     ):
         self.predictor = HyperFastClassifier(
@@ -28,6 +29,7 @@ class HyperFast(BaseEstimator, ClassifierMixin):
         self.feature_names = []
         self.n_ensemble_configurations = n_ensemble_configurations
         self.device = device
+        self.seed = seed
         self.kwargs = kwargs
 
         # specify that this is a binary classifier
@@ -78,7 +80,7 @@ class HyperFast(BaseEstimator, ClassifierMixin):
 
         probability_positive_class = self.predictor.predict(X)
         probability_positive_class_scaled = (probability_positive_class - probability_positive_class.min()) / (
-                probability_positive_class.max() - probability_positive_class.min())
+                probability_positive_class.max() - probability_positive_class.min() + 1e-10)
 
         # Create a 2D array with probabilities of both classes
         return np.vstack([1 - probability_positive_class_scaled, probability_positive_class_scaled]).T
@@ -88,7 +90,6 @@ class HyperFast(BaseEstimator, ClassifierMixin):
         proba = self.predict_proba(X)
 
         # Calculate the log of ratios for binary classification
-        # Add a small constant to both the numerator and the denominator
-        decision = np.log((proba[:, 1] + 1e-10) / (proba[:, 0] + 1e-10))
+        decision = np.log((proba[:, 1]) / (proba[:, 0] + 1e-10))
 
         return decision

@@ -12,17 +12,23 @@ class AutoGluon(BaseEstimator, ClassifierMixin):
             self,
             path: Path,
             time_limit: int = 3600,
-            presets: list[str] = ["best_quality"],
+            presets=None,
+            seed: int = 0,
             kwargs: dict = {}
     ):
         # set the type of the predictor to be a regressor
+
+        if presets is None:
+            presets = ["best_quality"]
 
         self.path = path
         self.feature_names = []
         self.target_name = "label"
         self.time_limit = time_limit
         self.presets = presets
+        self.seed = seed
         self.kwargs = kwargs
+
         self.predictor = TabularPredictor(
             label=self.target_name,
             path=str(path.absolute()),
@@ -36,7 +42,7 @@ class AutoGluon(BaseEstimator, ClassifierMixin):
         self.n_classes_ = 2
         self.classes_ = [0, 1]
 
-    def fit(self, X: pd.DataFrame, y: pd.DataFrame) -> 'AutoGluon':
+    def fit(self, X, y) -> 'AutoGluon':
         """
 
         Parameters
@@ -91,14 +97,18 @@ class AutoGluon(BaseEstimator, ClassifierMixin):
 
         eval_data = pd.DataFrame(X, columns=self.feature_names, dtype=object)
 
-        return self.predictor.predict_proba(eval_data, as_pandas=False)
+        probability_positive_class = self.predictor.predict_proba(eval_data, as_pandas=False, as_multiclass=False)
+        probability_positive_class_scaled = (probability_positive_class - probability_positive_class.min()) / (
+                probability_positive_class.max() - probability_positive_class.min() + 1e-10)
+
+        # Create a 2D array with probabilities of both classes
+        return np.vstack([1 - probability_positive_class_scaled, probability_positive_class_scaled]).T
 
     def decision_function(self, X):
         # Get the probabilities from predict_proba
         proba = self.predict_proba(X)
 
         # Calculate the log of ratios for binary classification
-        # Add a small constant to both the numerator and the denominator
-        decision = np.log((proba[:, 1] + 1e-10) / (proba[:, 0] + 1e-10))
+        decision = np.log((proba[:, 1]) / (proba[:, 0] + 1e-10))
 
         return decision

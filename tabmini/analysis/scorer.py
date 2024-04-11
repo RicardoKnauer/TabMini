@@ -1,15 +1,18 @@
+from typing import Callable
+import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator
 from sklearn.model_selection import cross_val_score, cross_validate
 
-from tabmini.estimators import get_estimators_with, is_threadsafe, is_sklearn_compatible
+from tabmini.analysis.timer import execute_with_timelimit
+from tabmini.estimators import get_estimators_with, is_threadsafe, is_sklearn_compatible, is_valid_time_limit
 
 
 def get_test_score(estimator: BaseEstimator, X, y, cv=3, scoring="roc_auc") -> float:
     return cross_val_score(estimator, X, y, cv=cv, scoring=scoring, n_jobs=-1).mean()
 
 
-def _get_train_and_test_score_per_estimators_on(
+def _get_train_and_test_score_per_estimator_on(
         X, y, working_dir, cv, scoring, time_limit, methods, device, n_jobs, kwargs_per_classifier
 ) -> dict[str, tuple[float, float]]:
     # lower and strip the method names
@@ -19,20 +22,38 @@ def _get_train_and_test_score_per_estimators_on(
     for method, estimator in get_estimators_with(working_dir, time_limit, device, kwargs_per_classifier).items():
         if method not in methods:
             continue
+        
+        if not is_valid_time_limit(method, time_limit):
+            print(f"Skipping {method} due to time limit")
+            results[method] = (0.0, 0.0)
+            continue
 
         n_jobs_for_method = n_jobs if is_threadsafe(method) else 1
 
         print(f"Testing {method} with {n_jobs_for_method} job(s)")
 
-        scores = cross_validate(
-            estimator,
-            X,
-            y,
-            cv=cv,
-            scoring=scoring,
-            n_jobs=n_jobs_for_method,
-            return_train_score=True
-        )
+        try:
+            executor: Callable[[], dict] = lambda: cross_validate(
+                estimator,
+                X,
+                y,
+                cv=cv,
+                scoring=scoring,
+                n_jobs=n_jobs_for_method,
+                return_train_score=True
+            )
+
+            # TODO: This was implemented but does not play nicely with the threaded nature of most of the estimators
+            # used for this benchmark. We will consider timing the execution instead and adding runtime to the results
+            # scores = execute_with_timelimit(executor, time_limit)
+
+            scores = executor()
+            
+        except Exception as e:
+            print(f"Failed to test {method}. Reason: {e}")
+            print("Score for this method will be set to 0.0")
+            results[method] = (0.0, 0.0)
+            continue
 
         results[method] = (scores["test_score"].mean(), scores["train_score"].mean())
 
@@ -63,7 +84,8 @@ def compare(
         y = (y == y.max()).astype(int)
 
         # Check how our estimators perform on the dataset
-        results_for_dataset: dict[str, tuple[float, float]] = _get_train_and_test_score_per_estimators_on(
+        # result is a dictionary shaped like {method_name: (test_score, train_score)}
+        results_for_dataset: dict[str, tuple[float, float]] = _get_train_and_test_score_per_estimator_on(
             X,
             y,
             working_dir=working_directory,

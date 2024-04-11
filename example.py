@@ -6,6 +6,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 
 import tabmini
+from tabmini.estimators import get_available_methods
 from tabmini.types import TabminiDataset
 
 working_directory = Path.cwd() / "workdir"
@@ -30,30 +31,30 @@ param_grid = [
 ]
 
 # inner cross-validation for logistic regression
-estimator = GridSearchCV(pipe, param_grid=param_grid, cv=3, scoring="neg_log_loss", n_jobs=1)
+estimator = GridSearchCV(pipe, param_grid=param_grid, cv=3, scoring="neg_log_loss", n_jobs=-1)
 
 # load dataset
 dataset: TabminiDataset = tabmini.load_dataset()
 
 # define a set of time-limits
-time_limits = [15 * 60, 30 * 60, 45 * 60]
+time_limits = [1, 3, 10, 30, 60]
+
 
 for time_limit in time_limits:
     # compare with the predefined methods
-    train_scores, test_scores = tabmini.compare(
+    test_scores, train_scores = tabmini.compare(
         method_name,
         estimator,
         dataset,
         working_directory,
         scoring_method="roc_auc",
-        cv=2,
-        #methods={"XGBoost", "LightGBM"},
+        cv=3,
         time_limit=time_limit,
         device="cpu",
-        n_jobs=-1,
+        n_jobs=-1,  # Time Limit does not play nice with threads
     )
 
-    test_scores.to_csv(working_directory / f"results_{time_limits}.csv", index_label="PMLB dataset")
+    test_scores.to_csv(working_directory / f"results_{time_limit}.csv", index_label="PMLB dataset")
 
     # analyze meta features
     meta_features_analysis = tabmini.get_meta_feature_analysis(

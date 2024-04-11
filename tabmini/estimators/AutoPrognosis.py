@@ -16,12 +16,14 @@ class AutoPrognosis(BaseEstimator, ClassifierMixin):
             path: Path,
             time_limit: int = 3600,
             classifier_names: list[str] = default_classifiers_names,
+            seed: int = 0,
             kwargs: dict = {}
     ):
         self.path = path
         self.feature_names = []
         self.time_limit = time_limit
         self.classifier_names = classifier_names
+        self.seed = seed
         self.kwargs = kwargs
 
         # specify that this is a binary classifier
@@ -62,6 +64,7 @@ class AutoPrognosis(BaseEstimator, ClassifierMixin):
             score_threshold=0.3,
             classifiers=self.classifier_names,
             timeout=int(self.time_limit / len(self.classifier_names)),
+            random_state=self.seed,
             **self.kwargs
         )
         self.study_ = study.fit()
@@ -89,7 +92,7 @@ class AutoPrognosis(BaseEstimator, ClassifierMixin):
 
         probability_positive_class = self.study_.predict_proba(X)
         probability_positive_class_scaled = (probability_positive_class - probability_positive_class.min()) / (
-                probability_positive_class.max() - probability_positive_class.min())
+                probability_positive_class.max() - probability_positive_class.min() + 1e-10)
 
         # Create a 2D array with probabilities of both classes
         return np.vstack([1 - probability_positive_class_scaled, probability_positive_class_scaled]).T
@@ -99,7 +102,6 @@ class AutoPrognosis(BaseEstimator, ClassifierMixin):
         proba = self.predict_proba(X)
 
         # Calculate the log of ratios for binary classification
-        # Add a small constant to both the numerator and the denominator
-        decision = np.log((proba[:, 1] + 1e-10) / (proba[:, 0] + 1e-10))
+        decision = np.log((proba[:, 1]) / (proba[:, 0] + 1e-10))
 
         return decision

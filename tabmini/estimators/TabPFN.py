@@ -14,6 +14,7 @@ class TabPFN(BaseEstimator, ClassifierMixin):
             time_limit: int = 3600,
             n_ensemble_configurations: int = 32,
             device: str = "cpu",
+            seed: int = 0,
             kwargs: dict = {}
     ):
         self.predictor = TabPFNClassifier(
@@ -21,12 +22,14 @@ class TabPFN(BaseEstimator, ClassifierMixin):
             N_ensemble_configurations=n_ensemble_configurations,
             subsample_features=True,
             device=device,
+            seed=seed,
             **kwargs
         )
         self.path = path
         self.time_limit = time_limit
         self.n_ensemble_configurations = n_ensemble_configurations
         self.device = device
+        self.seed = seed
         self.kwargs = kwargs
 
         # specify that this is a binary classifier
@@ -104,6 +107,6 @@ class TabPFN(BaseEstimator, ClassifierMixin):
 
         # Calculate the log of ratios for binary classification
         # Add a small constant to both the numerator and the denominator
-        decision = np.log((proba[:, 1] + 1e-10) / (proba[:, 0] + 1e-10))
+        decision = np.log((proba[:, 1]) / (proba[:, 0] + 1e-10))
 
         return decision

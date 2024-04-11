@@ -15,16 +15,30 @@ class CatBoost(BaseEstimator, ClassifierMixin):
             path: Path,
             time_limit: int = 3600,
             device: str = "cpu",
+            seed: int = 0,
             kwargs: dict = {}
     ):
         self.path = path
         self.time_limit = time_limit
         self.device = device
         self.kwargs = kwargs
+        self.seed = seed
 
         # specify that this is a binary classifier
         self.n_classes_ = 2
         self.classes_ = [0, 1]
+
+        self.catboost = CatBoostClassifier(
+            iterations=2,
+            depth=2,
+            learning_rate=1,
+            loss_function='Logloss',
+            eval_metric='AUC',
+            task_type='GPU' if self.device == 'cuda' else 'CPU',
+            devices='0',
+            random_seed=self.seed,
+            **self.kwargs
+        )
 
     def fit(self, X, y) -> 'CatBoost':
         """
@@ -47,18 +61,7 @@ class CatBoost(BaseEstimator, ClassifierMixin):
         self.feature_names = [f"f{i}" for i in range(X.shape[1])]
         self.feature_names.insert(0, "target")
 
-        catboost = CatBoostClassifier(
-            iterations=2,
-            depth=2,
-            learning_rate=1,
-            loss_function='Logloss',
-            eval_metric='AUC',
-            task_type='GPU' if self.device == 'cuda' else 'CPU',
-            devices='0',
-            **self.kwargs
-        )
-
-        self.model = catboost.fit(X, y)
+        self.model = self.catboost.fit(X, y)
 
         return self
 
@@ -68,7 +71,7 @@ class CatBoost(BaseEstimator, ClassifierMixin):
 
         probability_positive_class = self.model.predict(X)
         probability_positive_class_scaled = (probability_positive_class - probability_positive_class.min()) / (
-                probability_positive_class.max() - probability_positive_class.min())
+                probability_positive_class.max() - probability_positive_class.min() + 1e-10)
 
         # Create a 2D array with probabilities of both classes
         return np.vstack([1 - probability_positive_class_scaled, probability_positive_class_scaled]).T
@@ -78,7 +81,6 @@ class CatBoost(BaseEstimator, ClassifierMixin):
         proba = self.predict_proba(X)
 
         # Calculate the log of ratios for binary classification
-        # Add a small constant to both the numerator and the denominator
-        decision = np.log((proba[:, 1] + 1e-10) / (proba[:, 0] + 1e-10))
+        decision = np.log((proba[:, 1]) / (proba[:, 0] + 1e-10))
 
         return decision

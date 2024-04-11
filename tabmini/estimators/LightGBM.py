@@ -15,11 +15,13 @@ class LightGBM(BaseEstimator, ClassifierMixin):
             path: Path,
             time_limit: int = 3600,
             device: str = "cpu",
+            seed: int = 0,
             kwargs: dict = {}
     ):
         self.path = path
         self.time_limit = time_limit
         self.device = device
+        self.seed = seed
         self.kwargs = kwargs
 
         # specify that this is a binary classifier
@@ -84,7 +86,7 @@ class LightGBM(BaseEstimator, ClassifierMixin):
 
         probability_positive_class = self.model.predict(X)
         probability_positive_class_scaled = (probability_positive_class - probability_positive_class.min()) / (
-                probability_positive_class.max() - probability_positive_class.min())
+                probability_positive_class.max() - probability_positive_class.min() + 1e-10)
 
         # if this contains a NaN, replace it with 0.5
         probability_positive_class_scaled[np.isnan(probability_positive_class_scaled)] = 0.5
@@ -97,10 +99,6 @@ class LightGBM(BaseEstimator, ClassifierMixin):
         proba = self.predict_proba(X)
 
         # Calculate the log of ratios for binary classification
-        # Add a small constant to both the numerator and the denominator
-        left = proba[:, 0] + 1e-10
-        right = proba[:, 1] + 1e-10
-
-        decision = np.log((proba[:, 1] + 1e-10) / (proba[:, 0] + 1e-10))
+        decision = np.log((proba[:, 1]) / (proba[:, 0] + 1e-10))
 
         return decision
