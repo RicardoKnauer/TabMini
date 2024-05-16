@@ -109,6 +109,6 @@ class AutoGluon(BaseEstimator, ClassifierMixin):
         proba = self.predict_proba(X)
 
         # Calculate the log of ratios for binary classification
-        decision = np.log((proba[:, 1]) / (proba[:, 0] + 1e-10))
+        decision = np.log((proba[:, 1] + 1e-10) / (proba[:, 0] + 1e-10))
 
         return decision
