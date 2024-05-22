@@ -31,8 +31,8 @@ def generate_metafeatures(path):
     column_names = []
     for idx, datasets in enumerate(files, 1):
         for dataset in datasets:
-            X = pd.read_csv(f"results/{idx}/{dataset}/X.csv")
-            y = pd.read_csv(f"results/{idx}/{dataset}/y.csv")
+            X = pd.read_csv(f"data/{idx}/{dataset}/X.csv")
+            y = pd.read_csv(f"data/{idx}/{dataset}/y.csv")
             # 3932 metafeatures (pymfe.readthedocs.io/en/latest/auto_pages/meta_features_description.html)
             mfe = MFE(groups="all", summary="all", num_cv_folds=3, random_state=42)
             mfe.fit(X.to_numpy(), y.to_numpy())
