@@ -90,7 +90,7 @@ class AutoPrognosis(BaseEstimator, ClassifierMixin):
         X = check_array(X, accept_sparse=True)
         check_is_fitted(self, ['study_'])
 
-        probability_positive_class = self.study_.predict_proba(X)
+        probability_positive_class = self.study_.predict_proba(X).iloc[:, 1]
         probability_positive_class_scaled = (probability_positive_class - probability_positive_class.min()) / (
                 probability_positive_class.max() - probability_positive_class.min() + 1e-10)
 
