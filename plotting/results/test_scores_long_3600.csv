@@ -1,0 +1,221 @@
+dataset;approach;auc
+parity5;AutoPrognosis;0.27
+parity5;AutoGluon;1.0
+parity5;TabPFN;0.02
+parity5;HyperFast;0.02
+parity5;Logistic regression;0.17
+analcatdata_fraud;AutoPrognosis;0.86
+analcatdata_fraud;AutoGluon;0.80
+analcatdata_fraud;TabPFN;0.79
+analcatdata_fraud;HyperFast;0.73
+analcatdata_fraud;Logistic regression;0.77
+analcatdata_aids;AutoPrognosis;0.73
+analcatdata_aids;AutoGluon;0.77
+analcatdata_aids;TabPFN;0.63
+analcatdata_aids;HyperFast;0.53
+analcatdata_aids;Logistic regression;0.61
+analcatdata_bankruptcy;AutoPrognosis;0.98
+analcatdata_bankruptcy;AutoGluon;0.98
+analcatdata_bankruptcy;TabPFN;0.96
+analcatdata_bankruptcy;HyperFast;0.88
+analcatdata_bankruptcy;Logistic regression;0.97
+analcatdata_japansolvent;AutoPrognosis;0.85
+analcatdata_japansolvent;AutoGluon;0.88
+analcatdata_japansolvent;TabPFN;0.91
+analcatdata_japansolvent;HyperFast;0.91
+analcatdata_japansolvent;Logistic regression;0.85
+labor;AutoPrognosis;0.88
+labor;AutoGluon;0.94
+labor;TabPFN;0.99
+labor;HyperFast;0.98
+labor;Logistic regression;0.97
+analcatdata_asbestos;AutoPrognosis;0.87
+analcatdata_asbestos;AutoGluon;0.84
+analcatdata_asbestos;TabPFN;0.85
+analcatdata_asbestos;HyperFast;0.87
+analcatdata_asbestos;Logistic regression;0.86
+lupus;AutoPrognosis;0.84
+lupus;AutoGluon;0.79
+lupus;TabPFN;0.82
+lupus;HyperFast;0.79
+lupus;Logistic regression;0.85
+postoperative_patient_data;AutoPrognosis;0.49
+postoperative_patient_data;AutoGluon;0.55
+postoperative_patient_data;TabPFN;0.44
+postoperative_patient_data;HyperFast;0.34
+postoperative_patient_data;Logistic regression;0.38
+analcatdata_cyyoung9302;AutoPrognosis;0.89
+analcatdata_cyyoung9302;AutoGluon;0.85
+analcatdata_cyyoung9302;TabPFN;0.87
+analcatdata_cyyoung9302;HyperFast;0.84
+analcatdata_cyyoung9302;Logistic regression;0.87
+analcatdata_cyyoung8092;AutoPrognosis;0.73
+analcatdata_cyyoung8092;AutoGluon;0.90
+analcatdata_cyyoung8092;TabPFN;0.85
+analcatdata_cyyoung8092;HyperFast;0.84
+analcatdata_cyyoung8092;Logistic regression;0.79
+analcatdata_creditscore;AutoPrognosis;1.0
+analcatdata_creditscore;AutoGluon;0.99
+analcatdata_creditscore;TabPFN;1.0
+analcatdata_creditscore;HyperFast;0.87
+analcatdata_creditscore;Logistic regression;0.94
+appendicitis;AutoPrognosis;0.78
+appendicitis;AutoGluon;0.84
+appendicitis;TabPFN;0.82
+appendicitis;HyperFast;0.87
+appendicitis;Logistic regression;0.84
+molecular_biology_promoters;AutoPrognosis;0.88
+molecular_biology_promoters;AutoGluon;0.93
+molecular_biology_promoters;TabPFN;0.88
+molecular_biology_promoters;HyperFast;0.89
+molecular_biology_promoters;Logistic regression;0.88
+analcatdata_boxing1;AutoPrognosis;0.89
+analcatdata_boxing1;AutoGluon;0.89
+analcatdata_boxing1;TabPFN;0.76
+analcatdata_boxing1;HyperFast;0.67
+analcatdata_boxing1;Logistic regression;0.67
+mux6;AutoPrognosis;1.0
+mux6;AutoGluon;1.0
+mux6;TabPFN;1.0
+mux6;HyperFast;0.95
+mux6;Logistic regression;0.70
+analcatdata_boxing2;AutoPrognosis;0.82
+analcatdata_boxing2;AutoGluon;0.78
+analcatdata_boxing2;TabPFN;0.71
+analcatdata_boxing2;HyperFast;0.70
+analcatdata_boxing2;Logistic regression;0.68
+hepatitis;AutoPrognosis;0.85
+hepatitis;AutoGluon;0.82
+hepatitis;TabPFN;0.85
+hepatitis;HyperFast;0.83
+hepatitis;Logistic regression;0.84
+corral;AutoPrognosis;1.0
+corral;AutoGluon;1.0
+corral;TabPFN;1.0
+corral;HyperFast;1.0
+corral;Logistic regression;0.96
+glass2;AutoPrognosis;0.89
+glass2;AutoGluon;0.91
+glass2;TabPFN;0.89
+glass2;HyperFast;0.79
+glass2;Logistic regression;0.72
+backache;AutoPrognosis;0.60
+backache;AutoGluon;0.72
+backache;TabPFN;0.75
+backache;HyperFast;0.78
+backache;Logistic regression;0.72
+prnn_crabs;AutoPrognosis;1.0
+prnn_crabs;AutoGluon;1.0
+prnn_crabs;TabPFN;1.0
+prnn_crabs;HyperFast;0.81
+prnn_crabs;Logistic regression;1.0
+sonar;AutoPrognosis;0.88
+sonar;AutoGluon;0.93
+sonar;TabPFN;0.92
+sonar;HyperFast;0.89
+sonar;Logistic regression;0.85
+biomed;AutoPrognosis;1.0
+biomed;AutoGluon;0.96
+biomed;TabPFN;0.95
+biomed;HyperFast;0.93
+biomed;Logistic regression;0.94
+prnn_synth;AutoPrognosis;0.94
+prnn_synth;AutoGluon;0.95
+prnn_synth;TabPFN;0.95
+prnn_synth;HyperFast;0.94
+prnn_synth;Logistic regression;0.94
+analcatdata_lawsuit;AutoPrognosis;0.99
+analcatdata_lawsuit;AutoGluon;0.99
+analcatdata_lawsuit;TabPFN;1.0
+analcatdata_lawsuit;HyperFast;0.98
+analcatdata_lawsuit;Logistic regression;1.0
+spect;AutoPrognosis;0.84
+spect;AutoGluon;0.82
+spect;TabPFN;0.83
+spect;HyperFast;0.83
+spect;Logistic regression;0.82
+heart_statlog;AutoPrognosis;0.91
+heart_statlog;AutoGluon;0.89
+heart_statlog;TabPFN;0.90
+heart_statlog;HyperFast;0.89
+heart_statlog;Logistic regression;0.89
+breast_cancer;AutoPrognosis;0.69
+breast_cancer;AutoGluon;0.69
+breast_cancer;TabPFN;0.73
+breast_cancer;HyperFast;0.69
+breast_cancer;Logistic regression;0.70
+heart_h;AutoPrognosis;0.87
+heart_h;AutoGluon;0.89
+heart_h;TabPFN;0.88
+heart_h;HyperFast;0.85
+heart_h;Logistic regression;0.86
+hungarian;AutoPrognosis;0.86
+hungarian;AutoGluon;0.86
+hungarian;TabPFN;0.86
+hungarian;HyperFast;0.84
+hungarian;Logistic regression;0.85
+cleve;AutoPrognosis;0.90
+cleve;AutoGluon;0.89
+cleve;TabPFN;0.89
+cleve;HyperFast;0.88
+cleve;Logistic regression;0.88
+heart_c;AutoPrognosis;0.91
+heart_c;AutoGluon;0.91
+heart_c;TabPFN;0.91
+heart_c;HyperFast;0.89
+heart_c;Logistic regression;0.91
+haberman;AutoPrognosis;0.70
+haberman;AutoGluon;0.71
+haberman;TabPFN;0.72
+haberman;HyperFast;0.58
+haberman;Logistic regression;0.66
+bupa;AutoPrognosis;0.66
+bupa;AutoGluon;0.64
+bupa;TabPFN;0.68
+bupa;HyperFast;0.66
+bupa;Logistic regression;0.67
+spectf;AutoPrognosis;0.91
+spectf;AutoGluon;0.94
+spectf;TabPFN;0.93
+spectf;HyperFast;0.87
+spectf;Logistic regression;0.88
+ionosphere;AutoPrognosis;0.97
+ionosphere;AutoGluon;0.98
+ionosphere;TabPFN;0.98
+ionosphere;HyperFast;0.97
+ionosphere;Logistic regression;0.90
+colic;AutoPrognosis;0.87
+colic;AutoGluon;0.86
+colic;TabPFN;0.87
+colic;HyperFast;0.86
+colic;Logistic regression;0.86
+horse_colic;AutoPrognosis;0.88
+horse_colic;AutoGluon;0.85
+horse_colic;TabPFN;0.84
+horse_colic;HyperFast;0.83
+horse_colic;Logistic regression;0.82
+house_votes_84;AutoPrognosis;0.99
+house_votes_84;AutoGluon;0.99
+house_votes_84;TabPFN;0.99
+house_votes_84;HyperFast;0.98
+house_votes_84;Logistic regression;0.99
+vote;AutoPrognosis;1.0
+vote;AutoGluon;0.99
+vote;TabPFN;1.0
+vote;HyperFast;0.99
+vote;Logistic regression;0.99
+saheart;AutoPrognosis;0.77
+saheart;AutoGluon;0.76
+saheart;TabPFN;0.77
+saheart;HyperFast;0.76
+saheart;Logistic regression;0.77
+clean1;AutoPrognosis;0.93
+clean1;AutoGluon;1.0
+clean1;TabPFN;0.99
+clean1;HyperFast;0.96
+clean1;Logistic regression;1.0
+irish;AutoPrognosis;1.0
+irish;AutoGluon;1.0
+irish;TabPFN;1.0
+irish;HyperFast;0.97
+irish;Logistic regression;0.83
