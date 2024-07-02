@@ -13,49 +13,48 @@ def get_test_score(estimator: BaseEstimator, X, y, cv=3, scoring="roc_auc") -> f
 
 
 def _get_train_and_test_score_per_estimator_on(
-        X, y, working_dir, cv, scoring, time_limit, methods, device, n_jobs, kwargs_per_classifier
+        X, y, working_dir, cv, scoring, time_limit, framework, device, n_jobs, kwargs_per_classifier
 ) -> dict[str, tuple[float, float]]:
     # lower and strip the method names
-    methods = {method.lower().strip() for method in methods}
+    framework = framework.lower().strip() 
 
     results = {}
-    for method, estimator in get_estimators_with(working_dir, time_limit, device, kwargs_per_classifier).items():
-        if method not in methods:
-            continue
+    estimator = get_estimators_with(working_dir, time_limit, device, framework, kwargs_per_classifier)[framework]
+
+    
+    if not is_valid_time_limit(framework, time_limit):
+        print(f"Skipping {framework} due to time limit")
+        results[framework] = (0.0, 0.0)
+        return
+
+    n_jobs_for_method = n_jobs if is_threadsafe(framework) else 1
+
+    print(f"Testing {framework} with {n_jobs_for_method} job(s)")
+
+    try:
+        executor: Callable[[], dict] = lambda: cross_validate(
+            estimator,
+            X,
+            y,
+            cv=cv,
+            scoring=scoring,
+            n_jobs=n_jobs_for_method,
+            return_train_score=True
+        )
+
+        # TODO: This was implemented but does not play nicely with the threaded nature of most of the estimators
+        # used for this benchmark. We will consider timing the execution instead and adding runtime to the results
+        # scores = execute_with_timelimit(executor, time_limit)
+
+        scores = executor()
         
-        if not is_valid_time_limit(method, time_limit):
-            print(f"Skipping {method} due to time limit")
-            results[method] = (0.0, 0.0)
-            continue
+    except Exception as e:
+        print(f"Failed to test {framework}. Reason: {e}")
+        print("Score for this method will be set to 0.0")
+        results[framework] = (0.0, 0.0)
+        return
 
-        n_jobs_for_method = n_jobs if is_threadsafe(method) else 1
-
-        print(f"Testing {method} with {n_jobs_for_method} job(s)")
-
-        try:
-            executor: Callable[[], dict] = lambda: cross_validate(
-                estimator,
-                X,
-                y,
-                cv=cv,
-                scoring=scoring,
-                n_jobs=n_jobs_for_method,
-                return_train_score=True
-            )
-
-            # TODO: This was implemented but does not play nicely with the threaded nature of most of the estimators
-            # used for this benchmark. We will consider timing the execution instead and adding runtime to the results
-            # scores = execute_with_timelimit(executor, time_limit)
-
-            scores = executor()
-            
-        except Exception as e:
-            print(f"Failed to test {method}. Reason: {e}")
-            print("Score for this method will be set to 0.0")
-            results[method] = (0.0, 0.0)
-            continue
-
-        results[method] = (scores["test_score"].mean(), scores["train_score"].mean())
+    results[framework] = (scores["test_score"].mean(), scores["train_score"].mean())
 
     return results
 
@@ -68,7 +67,7 @@ def compare(
         scoring_method,
         cv,
         time_limit,
-        methods,
+        framework,
         device,
         kwargs_per_classifier,
         n_jobs=-1
@@ -92,7 +91,7 @@ def compare(
             cv=cv,
             scoring=scoring_method,
             time_limit=time_limit,
-            methods=methods,
+            framework=framework,
             device=device,
             n_jobs=n_jobs,
             kwargs_per_classifier=kwargs_per_classifier
