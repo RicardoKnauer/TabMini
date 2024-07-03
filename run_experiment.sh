@@ -7,7 +7,7 @@ source ~/.bashrc
 conda activate $1
 
 # Run the experiment script
-python example.py $1
+python example.py $1 $2 $3
 
 # Deactivate the conda environment
 conda deactivate
