@@ -13,6 +13,14 @@ def update_results(path, time_limit):
     if aggregated_results_file.exists():
         aggregated_results = pd.read_csv(aggregated_results_file)
         aggregated_results = pd.merge(aggregated_results, results, on=['PMLB dataset', 'Logistic Regression'])
+ 
+        aggregated_results.set_index(['PMLB dataset', 'Logistic Regression'], inplace=True)
+        results.set_index(['PMLB dataset', 'Logistic Regression'], inplace=True)
+
+        aggregated_results.update(results[['tabpfn']])
+
+        # Reset index if necessary
+        aggregated_results.reset_index(inplace=True)
     else:
         aggregated_results = results
     

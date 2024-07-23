@@ -14,4 +14,4 @@ conda activate tabmini
 #known good single GPU:
 #python cramming/pretrain.py name=test arch=bert-base train=bert-base data=sanity-check-2 impl.microbatch_size=2
 
-python orcastrate.py
+python orchestrate.py
