@@ -4,7 +4,7 @@ ARG METHOD
 ARG OUTPUT_PATH
 ARG TIME_LIMIT
 
-RUN apt update && apt install -y pkg-config build-essential libopenblas-dev julia
+RUN apt update && apt install -y pkg-config build-essential libopenblas-dev
 
 RUN conda init &&\
     conda update --name base conda &&\

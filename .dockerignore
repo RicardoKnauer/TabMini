@@ -6,5 +6,6 @@
 !example.py
 !environment.yml
 !tabmini
-!requirements.txt
+!requirements*
 !plotting
+!run_in_environment.sh
