@@ -1,6 +1,18 @@
 files = [
     # M = 32 - 100 (12 datasets)
-    ["analcatdata_aids", "analcatdata_asbestos"]
+    ["analcatdata_aids", "analcatdata_asbestos", "analcatdata_bankruptcy", "analcatdata_creditscore",
+     "analcatdata_cyyoung8092", "analcatdata_cyyoung9302", "analcatdata_fraud", "analcatdata_japansolvent",
+     "labor", "lupus", "parity5", "postoperative_patient_data"],
+    # M = 101 - 200 (10 datasets)
+    ["analcatdata_boxing1", "analcatdata_boxing2", "appendicitis", "backache", "corral", "glass2",
+     "hepatitis", "molecular_biology_promoters", "mux6", "prnn_crabs"],
+    # M = 201 - 300 (9 datasets)
+    ["analcatdata_lawsuit", "biomed", "breast_cancer", "heart_h", "heart_statlog", "hungarian", "prnn_synth",
+     "sonar", "spect"],
+    # M = 301 - 400 (8 datasets)
+    ["bupa", "cleve", "colic", "haberman", "heart_c", "horse_colic", "ionosphere", "spectf"],
+    # M = 401 - 500 (5 datasets)
+    ["clean1", "house_votes_84", "irish", "saheart", "vote"]
 ]
 
 # Taken from table 8 of the tabPFN paper...
