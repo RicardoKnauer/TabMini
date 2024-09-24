@@ -45,7 +45,7 @@ def compare(
         scoring_method: str = "roc_auc",
         cv: int = 3,
         time_limit: int = 3600,
-        framework: str = None,
+        methods: set[str] = estimators.get_available_methods(),
         device: str = "cpu",
         n_jobs: int = -1,
         kwargs_per_classifier: dict[str, dict] = None
@@ -75,7 +75,7 @@ def compare(
             - A DataFrame containing the test scores.
             - A DataFrame containing the train scores.
     """
-    print(f"Evaluating {method_name} against {framework}...")
+    print(f"Evaluating {method_name} against {methods}...")
     # The result of scorer.compare is a dictionary shaped like
     # dataset_name: {method_name: (test_score, train_score)}
     compare_results: dict[str, dict[str, tuple[float, float]]] = scorer.compare(
@@ -86,7 +86,7 @@ def compare(
         scoring_method=scoring_method,
         cv=cv,
         time_limit=time_limit,
-        framework=framework,
+        methods=methods,
         device=device,
         n_jobs=n_jobs,
         kwargs_per_classifier=kwargs_per_classifier,

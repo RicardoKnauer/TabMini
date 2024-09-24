@@ -1,7 +1,0 @@
-pandas==2.1.4
-pmlb==1.0.1.post3
-
-scikit-learn==1.4.1.post1
-numpy==1.26.4
-hyperfast==1.0.2
-pymfe==0.4.3
