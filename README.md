@@ -93,16 +93,26 @@ test_scores, train_scores = tabmini.compare(
 
 ## Usage - Standalone
 
-To run the benchmark suite in a Docker container, you can execute the provided `execute_tabmini.sh` script. 
-This script will build the container and run the benchmark suite. The results will be saved in the
-`results` folder.
+To run each framework in the benchmark suite within its own Docker container, execute the `orchestrate.py` script. Customize the `frameworks` and `time_limits` variables in the script to match your requirements.
 
-```bash
-./execute_tabmini.sh
-```
+### How It Works
 
-By default, this will run the `example.py` script (as described in the next section), which demonstrates how to use the `TabMini` benchmark suite.
-You may replace our illustrative implementation of logistic regression with your own estimator.
+The script will:
+1. Build a separate Docker container for each framework.
+2. Parallelize the execution of the processes.
+
+### Output Structure
+
+- Results for each framework will be saved in:  
+  `workdir/EXP_{date}_{time}/{framework}/`  
+  Each experiment will be stored in a separate file.
+
+- At the end of the session, all results will be consolidated into:  
+  `workdir/EXP_{date}_{time}/aggregated_results_{time_limit}.csv`
+
+### Default Behavior
+
+By default, the script runs the `example.py` script (detailed in the next section), which provides a demonstration of the `TabMini` benchmark suite. You can replace the example implementation (logistic regression) with your own estimator as needed.
 
 ## Example
 

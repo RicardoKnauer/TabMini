@@ -1,4 +1,8 @@
-FROM continuumio/miniconda3:23.10.0-1
+FROM continuumio/miniconda3:main
+
+ARG METHOD
+ARG OUTPUT_PATH
+ARG TIME_LIMIT
 
 RUN apt update && apt install -y pkg-config build-essential libopenblas-dev julia
 
@@ -8,12 +12,11 @@ RUN conda init &&\
     eval "$(conda shell.bash hook)" &&\
     conda activate tabmini
 
-COPY requirements.txt .
+COPY requirements/requirements_${METHOD}.txt requirements.txt
 RUN pip install -r requirements.txt
 
-ENV APP_HOME /app
+ENV APP_HOME=/app
 WORKDIR $APP_HOME
 COPY . $APP_HOME
 
-RUN conda run --name tabmini
 ENTRYPOINT ["python", "example.py"]

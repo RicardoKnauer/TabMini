@@ -6,8 +6,10 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 
 import tabmini
-from tabmini.estimators import get_available_methods
 from tabmini.types import TabminiDataset
+
+from datetime import datetime
+import os
 
 working_directory = Path.cwd() / "workdir"
 
@@ -36,25 +38,25 @@ estimator = GridSearchCV(pipe, param_grid=param_grid, cv=3, scoring="neg_log_los
 # load dataset
 dataset: TabminiDataset = tabmini.load_dataset()
 
-# define a set of time-limits
-time_limits = [1, 3, 10, 30, 60]
+def run_experiment(framework, output_path, time_limit):
+    # Load dataset
+    print(framework)
 
-
-for time_limit in time_limits:
-    # compare with the predefined methods
+    print(f'-------------------Time limit: {time_limit}-----------------------------------')
     test_scores, train_scores = tabmini.compare(
         method_name,
         estimator,
         dataset,
         working_directory,
         scoring_method="roc_auc",
-        cv=3,
+        cv=2,
         time_limit=time_limit,
+        framework=framework,
         device="cpu",
-        n_jobs=-1,  # Time Limit does not play nice with threads
+        n_jobs=1,  # Time Limit does not play nice with threads
     )
 
-    test_scores.to_csv(working_directory / f"results_{time_limit}.csv", index_label="PMLB dataset")
+    test_scores.to_csv(output_path / f"results_{time_limit}.csv", index_label="PMLB dataset")
 
     # analyze meta features
     meta_features_analysis = tabmini.get_meta_feature_analysis(
@@ -64,4 +66,16 @@ for time_limit in time_limits:
         correlation_method="spearman"
     )
 
-    meta_features_analysis.to_csv(working_directory / f"meta_features_analysis_{time_limit}.csv", index=False)
+    meta_features_analysis.to_csv(output_path /f"meta_features_analysis_{time_limit}.csv", index=False)
+
+
+
+if __name__ == "__main__":
+    import sys
+    framework   = sys.argv[1]
+    output_path = Path(sys.argv[2])
+    time_limit  = int(sys.argv[3])
+    output_path.mkdir(parents=True, exist_ok=True)
+    working_directory.mkdir(parents=True, exist_ok=True)
+
+    run_experiment(framework, output_path, time_limit)
