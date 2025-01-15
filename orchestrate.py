@@ -32,9 +32,10 @@ def main():
     wsl_path = Path("workdir" , f"Exp_{datetime_str}")
     full_path = Path.cwd() / wsl_path
 
-    frameworks = ['autoprognosis']
-    processes = []
+    frameworks = ['xgboost', 'catboost']
     time_limits = [120]
+    
+    processes = []
 
     for time_limit in time_limits:
         for env in frameworks:
