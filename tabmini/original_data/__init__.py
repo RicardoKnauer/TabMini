@@ -4,14 +4,11 @@ import sys
 from pathlib import Path
 
 FILE = Path(__file__).resolve()
-ROOT = FILE.parents[2]  
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))  
-ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  
+ROOT = FILE.parents[0]  # tabmini/original_data
 
 def get_data_dir():
     OFFLINE_DATA_DIR = dict()
-    for path in glob.glob("tabmini/original_data/*/*"):
+    for path in glob.glob(f"{str(ROOT)}/*/*"):
         if os.path.basename(path) not in ["1", "2", "3", "4", "5", "6", "7", "8", "9"]:
             OFFLINE_DATA_DIR[os.path.basename(path)] = path
 
