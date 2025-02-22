@@ -3,7 +3,7 @@ from pmlb import fetch_data
 
 from tabmini.data import data_info
 from tabmini.types import TabminiDataset
-from original_data import OFFLINE_DATA_DIR
+from tabmini.original_data import OFFLINE_DATA_DIR
 
 def load_dataset(reduced: bool = False) -> TabminiDataset:
     """
