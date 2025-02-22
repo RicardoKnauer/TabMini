@@ -3,13 +3,13 @@ from typing import Callable
 
 from sklearn.base import BaseEstimator
 
-from tabmini.estimators.AutoGluon import AutoGluon
-from tabmini.estimators.AutoPrognosis import AutoPrognosis
-from tabmini.estimators.HyperFast import HyperFast
-from tabmini.estimators.LightGBM import LightGBM
-from tabmini.estimators.TabPFN import TabPFN
-from tabmini.estimators.XGBoost import XGBoost
-from tabmini.estimators.CatBoost import CatBoost
+# from tabmini.estimators.AutoGluon import AutoGluon
+# from tabmini.estimators.AutoPrognosis import AutoPrognosis
+# from tabmini.estimators.HyperFast import HyperFast
+# from tabmini.estimators.LightGBM import LightGBM
+# from tabmini.estimators.TabPFN import TabPFN
+# from tabmini.estimators.XGBoost import XGBoost
+# from tabmini.estimators.CatBoost import CatBoost
 
 _SEED = 42
 
@@ -28,51 +28,51 @@ _MINIMUM_TIME_LIMITS = {
 # This is where the scikit-learn compatible estimators are registered for use as a classifier. Every estimator
 # in this list will always be instantiated on startup, even if they are not selected for generating a baseline.
 _ESTIMATORS: dict[str, Callable[[Path, int, str, int, dict], BaseEstimator]] = {
-    "AutoGluon": lambda base_path, time_limit, _, seed, kwargs: AutoGluon(
-        path=base_path / "autogluon",
-        time_limit=time_limit,
-        seed=seed,
-        kwargs=kwargs
-    ),
-    "AutoPrognosis": lambda base_path, time_limit, _, seed, kwargs: AutoPrognosis(
-        path=base_path / "autoprognosis",
-        time_limit=time_limit,
-        seed=seed,
-        kwargs=kwargs
-    ),
-    "TabPFN": lambda base_path, time_limit, device, seed, kwargs: TabPFN(
-        path=base_path / "tabpfn",
-        time_limit=time_limit,
-        seed=seed,
-        device=device,
-        kwargs=kwargs
-    ),
-    "HyperFast": lambda base_path, time_limit, device, seed, kwargs: HyperFast(
-        path=base_path / "hyperfast",
-        time_limit=time_limit,
-        seed=seed,
-        device=device,
-        kwargs=kwargs
-    ),
-    "LightGBM": lambda base_path, time_limit, _, seed, kwargs: LightGBM(
-        path=base_path / "lightgbm",
-        time_limit=time_limit,
-        seed=seed,
-        kwargs=kwargs
-    ),
-    "XGBoost": lambda base_path, time_limit, _, seed, kwargs: XGBoost(
-        path=base_path / "xgboost",
-        time_limit=time_limit,
-        seed=seed,
-        kwargs=kwargs
-    ),
-    "CatBoost": lambda base_path, time_limit, device, seed, kwargs: CatBoost(
-        path=base_path / "catboost",
-        time_limit=time_limit,
-        seed=seed,
-        device=device,
-        kwargs=kwargs
-    ),
+    # "AutoGluon": lambda base_path, time_limit, _, seed, kwargs: AutoGluon(
+    #     path=base_path / "autogluon",
+    #     time_limit=time_limit,
+    #     seed=seed,
+    #     kwargs=kwargs
+    # ),
+    # "AutoPrognosis": lambda base_path, time_limit, _, seed, kwargs: AutoPrognosis(
+    #     path=base_path / "autoprognosis",
+    #     time_limit=time_limit,
+    #     seed=seed,
+    #     kwargs=kwargs
+    # ),
+    # "TabPFN": lambda base_path, time_limit, device, seed, kwargs: TabPFN(
+    #     path=base_path / "tabpfn",
+    #     time_limit=time_limit,
+    #     seed=seed,
+    #     device=device,
+    #     kwargs=kwargs
+    # ),
+    # "HyperFast": lambda base_path, time_limit, device, seed, kwargs: HyperFast(
+    #     path=base_path / "hyperfast",
+    #     time_limit=time_limit,
+    #     seed=seed,
+    #     device=device,
+    #     kwargs=kwargs
+    # ),
+    # "LightGBM": lambda base_path, time_limit, _, seed, kwargs: LightGBM(
+    #     path=base_path / "lightgbm",
+    #     time_limit=time_limit,
+    #     seed=seed,
+    #     kwargs=kwargs
+    # ),
+    # "XGBoost": lambda base_path, time_limit, _, seed, kwargs: XGBoost(
+    #     path=base_path / "xgboost",
+    #     time_limit=time_limit,
+    #     seed=seed,
+    #     kwargs=kwargs
+    # ),
+    # "CatBoost": lambda base_path, time_limit, device, seed, kwargs: CatBoost(
+    #     path=base_path / "catboost",
+    #     time_limit=time_limit,
+    #     seed=seed,
+    #     device=device,
+    #     kwargs=kwargs
+    # ),
 
 }
 
