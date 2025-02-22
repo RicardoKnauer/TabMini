@@ -35,6 +35,9 @@ def load_dummy_dataset() -> TabminiDataset:
     """
     return data_handler.load_dummy_dataset()
 
+def load_dataset_beta() -> TabminiDataset:
+    return data_handler.load_dataset_beta()
+
 
 
 def compare(

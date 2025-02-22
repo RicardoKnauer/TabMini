@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: tabmini
+Version: 1.1.0
+Summary: Benchmarking and analysis of binary classifiers for tabular data
+Home-page: https://github.com/RicardoKnauer/TabMini
+Author: Ricardo Knauer, Marvin Grimm, Erik Rodner
+Author-email: marvin.grimm@htw-berlin.de
+Requires-Python: >3.10
