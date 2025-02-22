@@ -1,5 +1,13 @@
 import os
 import glob
+import sys
+from pathlib import Path
+
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[2]  
+if str(ROOT) not in sys.path:
+    sys.path.append(str(ROOT))  
+ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  
 
 def get_data_dir():
     OFFLINE_DATA_DIR = dict()
