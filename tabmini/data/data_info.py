@@ -1,33 +1,60 @@
 files = [
-    # M = 32 - 100 (12 datasets)
-    ["analcatdata_aids", "analcatdata_asbestos", "analcatdata_bankruptcy", "analcatdata_creditscore",
-     "analcatdata_cyyoung8092", "analcatdata_cyyoung9302", "analcatdata_fraud", "analcatdata_japansolvent",
+    # M = 32 - 100 (10 datasets)
+    # personally identifiable information:
+    # - "analcatdata_cyyoung8092"
+    # - "analcatdata_cyyoung9302"
+    ["analcatdata_aids", "analcatdata_asbestos", "analcatdata_bankruptcy",
+     "analcatdata_creditscore", "analcatdata_fraud", "analcatdata_japansolvent",
      "labor", "lupus", "parity5", "postoperative_patient_data"],
-    # M = 101 - 200 (10 datasets)
-    ["analcatdata_boxing1", "analcatdata_boxing2", "appendicitis", "backache", "corral", "glass2",
-     "hepatitis", "molecular_biology_promoters", "mux6", "prnn_crabs"],
-    # M = 201 - 300 (9 datasets)
-    ["analcatdata_lawsuit", "biomed", "breast_cancer", "heart_h", "heart_statlog", "hungarian", "prnn_synth",
-     "sonar", "spect"],
-    # M = 301 - 400 (8 datasets)
-    ["bupa", "cleve", "colic", "haberman", "heart_c", "horse_colic", "ionosphere", "spectf"],
-    # M = 401 - 500 (5 datasets)
-    ["clean1", "house_votes_84", "irish", "saheart", "vote"]
+    # M = 101 - 200 (8 datasets)
+    # personally identifiable information:
+    # - "analcatdata_boxing1"
+    # - "analcatdata_boxing2"
+    ["appendicitis", "backache", "corral", "glass2", "hepatitis",
+     "molecular_biology_promoters", "mux6", "prnn_crabs"],
+    # M = 201 - 300 (3 datasets)
+    # deprecated:
+    # - "heart_statlog"
+    # - "heart_h"
+    # - "hungarian"
+    # derived from time series or images:
+    # - "sonar"
+    # - "spect"
+    # ethically sensitive:
+    # - "analcatdata_lawsuit"
+    ["biomed", "breast_cancer", "prnn_synth"],
+    # M = 301 - 400 (2 datasets)
+    # deprecated:
+    # - "cleve"
+    # - "heart_c"
+    # - "colic"
+    # - "horse_colic"
+    # derived from time series or images:
+    # - "spectf"
+    # - "ionosphere"
+    ["bupa", "haberman"],
+    # M = 401 - 500 (2 datasets)
+    # deprecated:
+    # - "house_votes_84"
+    # - "vote"
+    # outlier:
+    # - "clean1"
+    ["irish", "saheart"]
 ]
 
-# Taken from table 8 of the tabPFN paper...
+# Taken from table 8 of the TabPFN paper...
 
 _excluded_1 = [
-    "breast-cancer",
-    # "colic", # We don't exclude colic as n_features is not consistent with the paper
+    "breast_cancer",
+    "colic",
     "dermatology",
     "sonar",
     "glass",
     "haberman",
     "tae",
-    "heart-c",
-    "heart-h",
-    "heart-statlog",
+    "heart_c",
+    "heart_h",
+    "heart_statlog",
     "hepatitis",
     "vote",
     "ionosphere",
@@ -64,8 +91,8 @@ _excluded_1 = [
     "monks-problems-1",
     "monks-problems-2",
     "monks-problems-3",
-    "SPECT",
-    "SPECTF",
+    "spect",
+    "spectf",
     "grub-damage",
     "synthetic_control",
     "prnn_crabs",
@@ -108,7 +135,7 @@ _excluded_1 = [
     "pbc"
 ]
 
-# ... and table 9 of the tabPFN paper
+# ... and table 9 of the TabPFN paper
 _excluded_2 = [
     "disclosure_z",
     "socmob",
@@ -139,7 +166,7 @@ _excluded_2 = [
     "parkinsons",
     "planning-relax",
     "qualitative-bankruptcy",
-    "sa-heart",
+    "saheart",
     "seeds",
     "thoracic-surgery",
     "user-knowledge",

@@ -1,9 +1,8 @@
 # TabMini
 
-We introduce `TabMini`, the first tabular benchmark suite specifically for the low-data regime with 44 binary 
-classification datasets, and use our suite to compare state-of-the-art machine learning methods, 
-i.e., automated machine learning (AutoML) frameworks and off-the-shelf deep neural networks, 
-against logistic regression.
+We introduce `TabMini`, the first tabular benchmark suite specifically for the low-data regime. Building on prior work ([Knauer et al., 2024](https://arxiv.org/abs/2409.01635)), `TabMini` includes additional curation steps to exclude datasets that are deprecated, derived from time series or images, outliers, ethically sensitive, or contain personally identifiable information. Our suite encompasses a diverse collection of [25 binary classification datasets](https://github.com/RicardoKnauer/TabMini/blob/master/tabmini/data/data_info.py) from 11 countries (predominantly the USA) and 9 domains (predominantly healthcare), and can be used to compare state-of-the-art machine learning methods, i.e., automated machine learning (AutoML) frameworks and off-the-shelf deep neural networks, against baselines such as logistic regression in the data-scarce setting.
+
+![Critical difference diagram comparing HyperFast, logistic regression, AutoPrognosis, AutoGluon, and TabPFN.](plotting/plots/cdd_filtered.svg)
 
 ### Installation/Development
 
@@ -131,13 +130,10 @@ For example usage, see `example.py`. This file is supposed to show how
 
 ## License
 
-Shield: [![CC BY 4.0][cc-by-shield]][cc-by]
+This project is licensed under the [MIT License](https://github.com/RicardoKnauer/TabMini/blob/master/LICENSE). See the `LICENSE` file for details.
 
-This work is licensed under a
-[Creative Commons Attribution 4.0 International License][cc-by].
+## Authors
 
-[![CC BY 4.0][cc-by-image]][cc-by]
-
-[cc-by]: http://creativecommons.org/licenses/by/4.0/
-[cc-by-image]: https://i.creativecommons.org/l/by/4.0/88x31.png
-[cc-by-shield]: https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg
+- Marvin Grimm (HTW Berlin)
+- Ricardo Knauer (HTW Berlin)
+- Abdelrahman Elsharkawi (HTW Berlin)
